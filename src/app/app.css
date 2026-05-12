@@ -1,0 +1,16 @@
+#outlet {
+  margin: 1rem;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  background-color: coral;
+  padding: 1rem 1rem;
+}
+
+a {
+  margin-left: 1rem;
+}
