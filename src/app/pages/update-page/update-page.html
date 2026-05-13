@@ -1,0 +1,26 @@
+<form [formGroup]="itemForm" ngSubmit="onSubmit()">
+  <div class="mb-3">
+    <label for="itemName" class="form-label">Enter Item Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="itemName"
+      placeholder="Item Name"
+      formControlName="itemName"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="itemCode" class="form-label">Enter Item Code</label>
+    <input
+      type="number"
+      class="form-control"
+      id="itemCode"
+      placeholder="Item Code"
+      formControlName="itemCode"
+    />
+  </div>
+  <div class="submitBtn">
+    <button type="reset" class="btn btn-secondary me-3">Reset</button>
+    <button type="submit" class="btn btn-success">Submit</button>
+  </div>
+</form>

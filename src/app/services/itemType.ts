@@ -3,3 +3,8 @@ export interface Item {
   itemName: string;
   itemCode: number;
 }
+
+export interface ItemReq {
+  itemName: string;
+  itemCode: number;
+}
