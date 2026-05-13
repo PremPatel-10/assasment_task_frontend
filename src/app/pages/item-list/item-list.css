@@ -1,0 +1,17 @@
+.add {
+  background-color: #fca311;
+  margin-left: 1rem;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+}
+
+table th {
+  text-align: center;
+}
+
+.actionBtn {
+  margin-right: 0.5rem;
+}

@@ -3,20 +3,23 @@ import { ItemService } from '../../services/item-service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Item } from '../../services/itemType';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-item-list',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, ButtonModule, DialogModule, InputTextModule],
   templateUrl: './item-list.html',
   styleUrl: './item-list.css',
 })
 export class ItemList {
-  items$ = signal<Observable<Item[]> | undefined>(undefined);
+  allItems: Observable<Item[]> | undefined = undefined;
 
   constructor(private itemService: ItemService) {}
 
   ngOnInit() {
-    this.items$.set(this.itemService.getAllItem());
+    this.allItems = this.itemService.getAllItem();
   }
 }

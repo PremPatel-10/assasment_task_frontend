@@ -7,10 +7,17 @@ header {
   align-items: center;
   justify-content: space-between;
   height: 60px;
-  background-color: coral;
+  background-color: #14213d;
+  color: #fca311;
   padding: 1rem 1rem;
 }
 
 a {
   margin-left: 1rem;
+  text-decoration: none;
+  color: #fca311;
+}
+
+a:hover {
+  color: #e5e5e5;
 }

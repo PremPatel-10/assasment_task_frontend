@@ -1,15 +1,24 @@
-<h2>Order List</h2>
+<h3>Item List</h3>
+<div class="heading">
+  <input type="text" placeholder="Serch your item" />
+  <button type="button" class="btn btn-sm add">Search</button>
+  <button type="button" class="btn btn-sm add">Add Item</button>
+</div>
 <table cellPadding="8">
   <tr>
     <th>Item Id</th>
     <th>Item Name</th>
     <th>Item Code</th>
   </tr>
-  @for (l of items$() | async; track l.itemId) {
+  @for (l of allItems | async; track l.itemId) {
     <tr>
       <td>{{ l.itemId }}</td>
       <td>{{ l.itemName }}</td>
       <td>{{ l.itemCode }}</td>
+      <td>
+        <button type="button" class="btn btn-danger actionBtn">Delete</button>
+        <button type="button" class="btn btn-info actionBtn">Update</button>
+      </td>
     </tr>
   }
 </table>
