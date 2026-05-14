@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../services/item-service';
+import { ItemReq } from '../../services/itemType';
 
 @Component({
   selector: 'app-update-page',
@@ -22,12 +23,13 @@ export class UpdatePage {
     private router: Router,
   ) {}
 
+  id: number = 0;
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
+      this.id = Number(params.get('id'));
 
-      if (id) {
-        this.itemService.getItemById(id).subscribe({
+      if (this.id) {
+        this.itemService.getItemById(this.id).subscribe({
           next: (data) => {
             this.itemForm.patchValue(data);
           },
@@ -36,6 +38,24 @@ export class UpdatePage {
           },
         });
       }
+    });
+  }
+
+  onUpdate() {
+    const itemUpdateData: ItemReq = {
+      itemName: this.itemForm.value.itemName!,
+      itemCode: this.itemForm.value.itemCode!,
+    };
+
+    this.itemService.updateItem(this.id, itemUpdateData).subscribe({
+      next: () => {
+        alert('Data Updated');
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.log('Error ', err);
+        alert('Error Message: ' + err.message);
+      },
     });
   }
 }

@@ -15,3 +15,7 @@ table th {
 .actionBtn {
   margin-right: 0.5rem;
 }
+
+#modelTable th {
+  text-align: left;
+}

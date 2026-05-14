@@ -1,8 +1,15 @@
 <h3>Item List</h3>
 <div class="heading">
-  <input type="text" placeholder="Serch your item" />
+  <input type="text" placeholder="Serch your item" id="searchBar" />
   <button type="button" class="btn btn-sm add">Search</button>
-  <button type="button" class="btn btn-sm add">Add Item</button>
+  <button
+    type="button"
+    class="btn btn-sm add"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModal"
+  >
+    Add Item
+  </button>
 </div>
 <table cellPadding="8">
   <tr>
@@ -10,7 +17,7 @@
     <th>Item Name</th>
     <th>Item Code</th>
   </tr>
-  @for (l of allItems() | async; track l.itemId) {
+  @for (l of allItems(); track l.itemId) {
     <tr>
       <td>{{ l.itemId }}</td>
       <td>{{ l.itemName }}</td>
@@ -26,3 +33,40 @@
     </tr>
   }
 </table>
+@if (confirmdata) {
+  <div class="alert alert-success" role="alert">Item Delete Successfully</div>
+}
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Item Information</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table cellPadding="4" id="modelTable">
+          <tr>
+            <th>Item Name</th>
+            <td><input type="text" id="inpItemName" placeholder="Enter Item Name" /></td>
+          </tr>
+          <tr>
+            <th>Item Code</th>
+            <td><input type="text" id="inpItemCode" placeholder="Enter Item Code" /></td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" (click)="onInsert()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

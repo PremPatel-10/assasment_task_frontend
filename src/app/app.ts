@@ -8,10 +8,4 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  constructor(private router: Router) {}
-
-  navigateHome() {
-    this.router.navigate(['/']);
-  }
-}
+export class App {}

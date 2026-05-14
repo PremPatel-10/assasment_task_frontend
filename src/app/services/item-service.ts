@@ -27,4 +27,8 @@ export class ItemService {
   deleteItem(id: number) {
     return this.http.delete(`https://localhost:7254/item/delete/${id}`);
   }
+
+  searchItem(item: string) {
+    return this.http.get<Item[]>(`https://localhost:7254/item/search/${item}`);
+  }
 }
