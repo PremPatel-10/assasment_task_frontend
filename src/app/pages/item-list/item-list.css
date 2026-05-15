@@ -8,8 +8,13 @@
   align-items: center;
 }
 
+table {
+  border: 1px solid gray;
+  margin-top: 1rem;
+}
+
 table th {
-  text-align: center;
+  text-align: left;
 }
 
 .actionBtn {
