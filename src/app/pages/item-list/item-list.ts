@@ -19,7 +19,7 @@ export class ItemList {
   ) {}
 
   ngOnInit() {
-    this.loadPage(this.currentPage);
+    this.loadPage();
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -94,9 +94,10 @@ export class ItemList {
   pageData = signal<Item[]>([]);
   sizeOfPage: number = 20;
   currentPage: number = 1;
+  numOfPages: number = 1;
 
-  loadPage(numOfPages: number) {
-    this.itemService.itemPages(numOfPages, this.sizeOfPage).subscribe({
+  loadPage() {
+    this.itemService.itemPages(this.numOfPages, this.sizeOfPage).subscribe({
       next: (data) => {
         this.pageData.set(data);
       },
