@@ -81,13 +81,14 @@ export class ItemList {
 
   searchedItemD = signal<Item[] | undefined>(undefined);
   onSearch() {
-    const searchedItem = (document.querySelector('#searchBar') as HTMLInputElement).value;
+    let searchedItem = document.querySelector('#searchBar') as HTMLInputElement;
 
-    if (!searchedItem.trim()) return;
+    if (!searchedItem.value.trim()) return;
 
-    this.itemService.searchItem(searchedItem).subscribe({
+    this.itemService.searchItem(searchedItem.value).subscribe({
       next: (data) => {
         this.pageData.set(data);
+        searchedItem.value = '';
       },
       error: (err) => console.error(err),
     });
