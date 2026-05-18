@@ -2,6 +2,7 @@
 <div class="heading">
   <input type="text" placeholder="Serch your item" id="searchBar" />
   <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
+  <button type="button" class="btn btn-sm add" (click)="showAllList()">Show List</button>
   <button
     type="button"
     class="btn btn-sm add"
@@ -36,6 +37,17 @@
     </tr>
   }
 </table>
+<ul class="pagination mt-3">
+  <li class="page-item">
+    <button class="btn btn-warning rounded-end-0" (click)="previousPage()">&laquo;</button>
+  </li>
+  <li class="page-item">
+    <a class="page-link">{{ pageNumber }}</a>
+  </li>
+  <li class="page-item">
+    <button class="btn btn-warning rounded-start-0" (click)="nextPage()">&raquo;</button>
+  </li>
+</ul>
 
 <!-- @if (confirmdata) {
   <div class="alert alert-success" role="alert">Item Delete Successfully</div>

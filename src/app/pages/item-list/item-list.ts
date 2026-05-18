@@ -22,6 +22,10 @@ export class ItemList {
     this.loadPage();
   }
 
+  showAllList() {
+    this.loadPage();
+  }
+
   /*---------------------------------------------------------------------------------------------------*/
 
   itemData: ItemReq | undefined;
@@ -58,7 +62,7 @@ export class ItemList {
           this.pageData.update((i) => i?.filter((u) => u.itemId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + err.message);
+          alert("Data doesn't Deleted with Error: " + err.Message);
         },
       });
     } else {
@@ -92,12 +96,11 @@ export class ItemList {
   /*---------------------------------------------------------------------------------------------------*/
 
   pageData = signal<Item[]>([]);
-  sizeOfPage: number = 20;
-  currentPage: number = 1;
-  numOfPages: number = 1;
+  pageSize: number = 5;
+  pageNumber: number = 1;
 
   loadPage() {
-    this.itemService.itemPages(this.numOfPages, this.sizeOfPage).subscribe({
+    this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
         this.pageData.set(data);
       },
@@ -105,5 +108,17 @@ export class ItemList {
         console.log('Error: ' + err.Message);
       },
     });
+  }
+
+  nextPage() {
+    this.pageNumber++;
+    this.loadPage();
+  }
+
+  previousPage() {
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
+      this.loadPage();
+    }
   }
 }

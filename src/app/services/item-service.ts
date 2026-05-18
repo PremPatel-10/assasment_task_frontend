@@ -32,7 +32,7 @@ export class ItemService {
     return this.http.get<Item[]>(`https://localhost:7254/item/search/${item}`);
   }
 
-  itemPages(noOfPages: number, sizeOfPage: number) {
-    return this.http.get<Item[]>(`https://localhost:7254/item/pages/${noOfPages}/${sizeOfPage}`);
+  itemPages(pageNumber: number, pageSize: number) {
+    return this.http.get<Item[]>(`https://localhost:7254/item/pages/${pageNumber}/${pageSize}`);
   }
 }

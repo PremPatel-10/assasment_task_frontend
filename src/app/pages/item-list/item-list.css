@@ -24,3 +24,7 @@ table th {
 #modelTable th {
   text-align: left;
 }
+
+ul li {
+  text-align: center;
+}
