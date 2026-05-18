@@ -83,7 +83,7 @@ export class ItemList {
 
     this.itemService.searchItem(searchedItem.value).subscribe({
       next: (data) => {
-        if (data.length > 1) {
+        if (data.length >= 1) {
           this.pageData.set(data);
         } else {
           alert('Item not Found');
