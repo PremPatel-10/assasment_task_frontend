@@ -28,3 +28,7 @@ table th {
 ul li {
   text-align: center;
 }
+
+app-input-popup {
+  z-index: 1;
+}

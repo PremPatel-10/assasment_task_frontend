@@ -2,11 +2,12 @@ import { Component, signal } from '@angular/core';
 import { ItemService } from '../../services/item-service';
 import { Item, ItemReq } from '../../services/itemType';
 import { Router } from '@angular/router';
+import { InputPopup } from '../input-popup/input-popup';
 
 @Component({
   selector: 'app-item-list',
   standalone: true,
-  imports: [],
+  imports: [InputPopup],
   templateUrl: './item-list.html',
   styleUrl: './item-list.css',
 })
@@ -24,6 +25,7 @@ export class ItemList {
 
   /*---------------------------------------------------------------------------------------------------*/
 
+  isPopupOpen = signal<boolean>(false);
   itemData: ItemReq | undefined;
   onInsert() {
     const inpItemName = (document.querySelector('#inpItemName') as HTMLInputElement).value;

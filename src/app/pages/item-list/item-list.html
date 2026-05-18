@@ -2,15 +2,11 @@
 <div class="heading">
   <input type="text" placeholder="Serch your item" id="searchBar" />
   <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
-  <button
-    type="button"
-    class="btn btn-sm add"
-    data-bs-toggle="modal"
-    data-bs-target="#exampleModal"
-  >
-    Add Item
-  </button>
+  <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
 </div>
+@if (isPopupOpen()) {
+  <app-input-popup [isOpen]="isPopupOpen()" (close)="isPopupOpen.set(false)"></app-input-popup>
+}
 
 <!-- /*---------------------------------------------------------------------------------------------------*/ -->
 
@@ -55,7 +51,7 @@
 <!-- /*---------------------------------------------------------------------------------------------------*/ -->
 
 <!-- Modal -->
-<div
+<!-- <div
   class="modal fade"
   id="exampleModal"
   tabindex="-1"
@@ -86,4 +82,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
