@@ -22,10 +22,6 @@ export class ItemList {
     this.loadPage();
   }
 
-  showAllList() {
-    this.loadPage();
-  }
-
   /*---------------------------------------------------------------------------------------------------*/
 
   itemData: ItemReq | undefined;
@@ -87,10 +83,19 @@ export class ItemList {
 
     this.itemService.searchItem(searchedItem.value).subscribe({
       next: (data) => {
-        this.pageData.set(data);
+        if (data.length > 1) {
+          this.pageData.set(data);
+        } else {
+          alert('Item not Found');
+          this.loadPage();
+        }
         searchedItem.value = '';
       },
-      error: (err) => console.error(err),
+      error: (err) => {
+        console.error(err);
+        alert('Search failed due to a server error');
+        this.loadPage();
+      },
     });
   }
 
