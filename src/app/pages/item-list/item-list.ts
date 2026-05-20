@@ -1,9 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { ItemService } from '../../services/item-service';
-import { Item, ItemReq } from '../../services/itemType';
+import { Item, ItemReq } from '../../Models/item';
 import { Router } from '@angular/router';
-import { InputPopup } from '../input-popup/input-popup';
-import { compileDeclareInjectableFromMetadata } from '@angular/compiler';
+import { InputPopup } from './input-popup/input-popup';
 
 @Component({
   selector: 'app-item-list',
@@ -75,7 +74,7 @@ export class ItemList {
   /*---------------------------------------------------------------------------------------------------*/
 
   onUpdate(id: number) {
-    this.router.navigate(['/edit', id]);
+    this.router.navigate(['itemlist/edit/item', id]);
   }
 
   /*---------------------------------------------------------------------------------------------------*/

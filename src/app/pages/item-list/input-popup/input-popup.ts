@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { ItemReq } from '../../services/itemType';
+import { ItemReq } from '../../../Models/item';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({

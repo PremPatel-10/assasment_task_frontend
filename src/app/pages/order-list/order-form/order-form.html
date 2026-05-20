@@ -1,0 +1,47 @@
+<form [formGroup]="orderForm" ngSubmit="onSubmit()">
+  <div class="mb-3">
+    <label for="orderNumber" class="form-label">Enter Order Number</label>
+    <input
+      type="number"
+      class="form-control"
+      id="orderNumber"
+      placeholder="Order Number"
+      formControlName="orderNumber"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="vendorName" class="form-label">Enter Vendor Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="vendorName"
+      placeholder="Vendor Name"
+      formControlName="vendorName"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="orderDate" class="form-label">Enter Order Date</label>
+    <input
+      type="text"
+      class="form-control"
+      id="orderDate"
+      placeholder="yyyy/mm/dd"
+      formControlName="orderDate"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="orderTotal" class="form-label">Enter Order Total</label>
+    <input
+      type="number"
+      class="form-control"
+      id="orderTotal"
+      placeholder="Order Total"
+      formControlName="orderTotal"
+    />
+  </div>
+  <div class="submitBtn">
+    <button type="button" class="btn btn-primary me-3" (click)="backToHomepage()">Back</button>
+    <button type="reset" class="btn btn-secondary me-3">Reset</button>
+    <button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
+  </div>
+</form>

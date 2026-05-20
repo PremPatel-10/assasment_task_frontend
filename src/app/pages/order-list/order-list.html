@@ -1,1 +1,46 @@
-<p>order-list works!</p>
+<h3>Order List</h3>
+<div class="heading">
+  <input type="text" placeholder="Serch your Order" id="searchBar" />
+  <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
+  <button type="button" class="btn btn-sm add" (click)="addOrder()">Add Order</button>
+</div>
+
+<!-- /*---------------------------------------------------------------------------------------------------*/ -->
+
+<table cellPadding="8">
+  <tr>
+    <th>Order Id</th>
+    <th>Order Number</th>
+    <th>Vender Name</th>
+    <th>Order Date</th>
+    <th>Order Total</th>
+  </tr>
+  @for (l of pageData(); track l.orderId) {
+    <tr>
+      <td>{{ l.orderId }}</td>
+      <td>{{ l.orderNumber }}</td>
+      <td>{{ l.vendorName }}</td>
+      <td>{{ l.orderDate }}</td>
+      <td>{{ l.orderTotal }}</td>
+      <td>
+        <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.orderId)">
+          Delete
+        </button>
+        <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.orderId)">
+          Update
+        </button>
+      </td>
+    </tr>
+  }
+</table>
+<ul class="pagination mt-3">
+  <li class="page-item">
+    <button class="btn btn-warning rounded-end-0" (click)="previousPage()">&laquo;</button>
+  </li>
+  <li class="page-item">
+    <a class="page-link">{{ pageNumber }}</a>
+  </li>
+  <li class="page-item">
+    <button class="btn btn-warning rounded-start-0" (click)="nextPage()">&raquo;</button>
+  </li>
+</ul>

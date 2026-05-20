@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
 import { ItemList } from './pages/item-list/item-list';
 import { OrderList } from './pages/order-list/order-list';
-import { UpdatePage } from './pages/update-page/update-page';
+import { UpdatePage } from './pages/item-list/update-page/update-page';
+import { OrderForm } from './pages/order-list/order-form/order-form';
 
 export const routes: Routes = [
   { path: '', component: ItemList },
   { path: 'itemlist', component: ItemList },
   { path: 'orderlist', component: OrderList },
-  { path: 'edit/:id', component: UpdatePage },
+  { path: 'itemlist/edit/item/:id', component: UpdatePage },
+  { path: 'orderlist/add', component: OrderForm },
+  { path: 'orderlist/edit/order/:id', component: OrderForm },
 ];

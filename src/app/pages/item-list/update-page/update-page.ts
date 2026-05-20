@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ItemService } from '../../services/item-service';
-import { ItemReq } from '../../services/itemType';
+import { ItemService } from '../../../services/item-service';
+import { ItemReq } from '../../../Models/item';
 
 @Component({
   selector: 'app-update-page',
