@@ -12,13 +12,17 @@ export class InputPopup {
   isOpen = input<boolean>(false);
   isClose = output<void>();
 
-  itemData = output<ItemReq | undefined>();
+  itemData = output<ItemReq>();
   onSubmit() {
+    let inpData: ItemReq = { itemName: '', itemCode: 0 };
+
     const inpItemName = (document.querySelector('#inpItemName') as HTMLInputElement).value;
     const inpItemCode = Number((document.querySelector('#inpItemCode') as HTMLInputElement).value);
-    this.itemData.emit({
+    inpData = {
       itemName: inpItemName,
       itemCode: inpItemCode,
-    });
+    };
+
+    this.itemData.emit(inpData);
   }
 }

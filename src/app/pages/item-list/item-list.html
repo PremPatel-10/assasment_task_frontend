@@ -5,7 +5,11 @@
   <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
 </div>
 @if (isPopupOpen()) {
-  <app-input-popup [isOpen]="isPopupOpen()" (close)="isPopupOpen.set(false)"></app-input-popup>
+  <app-input-popup
+    [isOpen]="isPopupOpen()"
+    (isClose)="isPopupOpen.set(false)"
+    (itemData)="onInsert($event)"
+  ></app-input-popup>
 }
 
 <!-- /*---------------------------------------------------------------------------------------------------*/ -->
@@ -43,10 +47,6 @@
     <button class="btn btn-warning rounded-start-0" (click)="nextPage()">&raquo;</button>
   </li>
 </ul>
-
-<!-- @if (confirmdata) {
-  <div class="alert alert-success" role="alert">Item Delete Successfully</div>
-} -->
 
 <!-- /*---------------------------------------------------------------------------------------------------*/ -->
 
