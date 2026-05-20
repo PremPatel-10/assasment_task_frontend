@@ -3,9 +3,10 @@ import { ItemList } from './pages/item-list/item-list';
 import { OrderList } from './pages/order-list/order-list';
 import { UpdatePage } from './pages/item-list/update-page/update-page';
 import { OrderForm } from './pages/order-list/order-form/order-form';
+import { HomePage } from './pages/home-page/home-page';
 
 export const routes: Routes = [
-  { path: '', component: ItemList },
+  { path: '', component: HomePage },
   { path: 'itemlist', component: ItemList },
   { path: 'orderlist', component: OrderList },
   { path: 'itemlist/edit/item/:id', component: UpdatePage },
