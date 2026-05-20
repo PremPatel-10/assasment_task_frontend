@@ -58,4 +58,8 @@ export class UpdatePage {
       },
     });
   }
+
+  backToHomepage() {
+    this.router.navigate(['/itemlist']);
+  }
 }
