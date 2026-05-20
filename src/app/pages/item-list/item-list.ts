@@ -3,6 +3,7 @@ import { ItemService } from '../../services/item-service';
 import { Item, ItemReq } from '../../services/itemType';
 import { Router } from '@angular/router';
 import { InputPopup } from '../input-popup/input-popup';
+import { compileDeclareInjectableFromMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-item-list',
@@ -35,16 +36,18 @@ export class ItemList {
     //   itemCode: inpItemCode,
     // };
 
-    this.itemService.insertItem(  inpData).subscribe({
-      next: (data) => {
-        alert('Item Added Successfully');
-        this.pageData.update((i) => [...i, data]);
-      },
-      error: (err) => {
-        alert('Item already Exist');
-        console.log('err: ' + err.message);
-      },
-    });
+    if (inpData) {
+      this.itemService.insertItem(inpData).subscribe({
+        next: (data) => {
+          alert('Item Added Successfully');
+          this.pageData.update((i) => [...i, data]);
+        },
+        error: (err) => {
+          alert('Error: ' + err.message);
+          console.log('err: ' + err.message);
+        },
+      });
+    }
   }
 
   /*---------------------------------------------------------------------------------------------------*/
