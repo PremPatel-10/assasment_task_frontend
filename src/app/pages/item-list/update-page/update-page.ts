@@ -50,7 +50,7 @@ export class UpdatePage {
     this.itemService.updateItem(this.id, itemUpdateData).subscribe({
       next: () => {
         alert('Data Updated');
-        this.router.navigate(['/']);
+        this.router.navigate(['/itemlist']);
       },
       error: (err) => {
         console.log('Error ', err);
