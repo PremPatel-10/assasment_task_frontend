@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { OrderService } from '../../services/order-service';
 import { Router } from '@angular/router';
-import { Order, OrderReq } from '../../Models/Order';
+import { Order } from '../../Models/Order';
 
 @Component({
   selector: 'app-order-list',
@@ -11,12 +11,20 @@ import { Order, OrderReq } from '../../Models/Order';
   styleUrl: './order-list.css',
 })
 export class OrderList {
+  totalOrderCount: number = 0;
+
   constructor(
     private orderService: OrderService,
     private router: Router,
   ) {}
 
   ngOnInit() {
+    //total record for page count
+    this.orderService.getAllOrder().subscribe((data) => {
+      this.totalOrderCount = data.length;
+      console.log('Total Order:', this.totalOrderCount);
+    });
+
     this.loadPage();
   }
 
@@ -85,11 +93,13 @@ export class OrderList {
   pageData = signal<Order[]>([]);
   pageSize: number = 5;
   pageNumber: number = 1;
+  finalPage: number = 0;
 
   loadPage() {
     this.orderService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
         this.pageData.set(data);
+        this.finalPage = Math.ceil(this.totalOrderCount / this.pageSize);
       },
       error: (err) => {
         console.log('Error: ' + err.Message);
@@ -98,8 +108,10 @@ export class OrderList {
   }
 
   nextPage() {
-    this.pageNumber++;
-    this.loadPage();
+    if (this.pageNumber < this.finalPage) {
+      this.pageNumber++;
+      this.loadPage();
+    }
   }
 
   previousPage() {

@@ -12,7 +12,7 @@ import { InputPopup } from './input-popup/input-popup';
   styleUrl: './item-list.css',
 })
 export class ItemList {
-  allItems = signal<Item[]>([]);
+  totalItemCount: number = 0;
 
   constructor(
     private itemService: ItemService,
@@ -20,6 +20,12 @@ export class ItemList {
   ) {}
 
   ngOnInit() {
+    //total record for page count
+    this.itemService.getAllItem().subscribe((data) => {
+      this.totalItemCount = data.length;
+      console.log('Total Item:', this.totalItemCount);
+    });
+
     this.loadPage();
   }
 
@@ -108,11 +114,13 @@ export class ItemList {
   pageData = signal<Item[]>([]);
   pageSize: number = 5;
   pageNumber: number = 1;
+  finalPage: number = 0;
 
   loadPage() {
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
         this.pageData.set(data);
+        this.finalPage = Math.ceil(this.totalItemCount / this.pageSize);
       },
       error: (err) => {
         console.log('Error: ' + err.Message);
@@ -121,8 +129,10 @@ export class ItemList {
   }
 
   nextPage() {
-    this.pageNumber++;
-    this.loadPage();
+    if (this.pageNumber < this.finalPage) {
+      this.pageNumber++;
+      this.loadPage();
+    }
   }
 
   previousPage() {
