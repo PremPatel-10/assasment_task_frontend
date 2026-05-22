@@ -15,7 +15,7 @@ export class InputPopup {
 
   itemData = output<ItemReq>();
 
-  itemForm: FormGroup = new FormGroup({
+  itemForm = new FormGroup({
     itemNameForm: new FormControl('', [Validators.required]),
     itemCodeForm: new FormControl(0, [Validators.required]),
   });
@@ -23,18 +23,27 @@ export class InputPopup {
   onSubmit() {
     let inpData: ItemReq | undefined = undefined;
 
-    const inpItemName = this.itemForm.value.itemNameForm;
-    const inpItemCode = Number(this.itemForm.value.itemCodeForm);
-
+    if (
+      this.itemForm.value.itemNameForm?.trim() === '' ||
+      Number(this.itemForm.value.itemCodeForm) === 0
+    ) {
+      alert('You cannot submit with Empty Feilds');
+      return;
+    }
     if (this.itemForm.valid) {
-      inpData = {
-        itemName: inpItemName,
-        itemCode: inpItemCode,
-      };
-      console.log(inpData);
-      this.itemData.emit(inpData);
-    } else {
-      alert('Do not keep your fields empty');
+      const inpItemName = this.itemForm.value.itemNameForm;
+      const inpItemCode = Number(this.itemForm.value.itemCodeForm);
+
+      if (this.itemForm.valid) {
+        inpData = {
+          itemName: inpItemName!,
+          itemCode: inpItemCode!,
+        };
+        console.log(inpData);
+        this.itemData.emit(inpData);
+      } else {
+        alert('Do not keep your fields empty');
+      }
     }
   }
 }

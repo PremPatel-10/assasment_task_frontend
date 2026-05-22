@@ -42,21 +42,25 @@ export class UpdatePage {
   }
 
   onUpdate() {
-    const itemUpdateData: ItemReq = {
-      itemName: this.itemForm.value.itemName!,
-      itemCode: this.itemForm.value.itemCode!,
-    };
+    if (this.itemForm.valid) {
+      const itemUpdateData: ItemReq = {
+        itemName: this.itemForm.value.itemName!,
+        itemCode: this.itemForm.value.itemCode!,
+      };
 
-    this.itemService.updateItem(this.id, itemUpdateData).subscribe({
-      next: () => {
-        alert('Data Updated');
-        this.router.navigate(['/itemlist']);
-      },
-      error: (err) => {
-        console.log('Error ', err);
-        alert('Error Message: ' + err.message);
-      },
-    });
+      this.itemService.updateItem(this.id, itemUpdateData).subscribe({
+        next: () => {
+          alert('Data Updated');
+          this.router.navigate(['/itemlist']);
+        },
+        error: (err) => {
+          console.log('Error ', err);
+          alert('Error Message: ' + err.message);
+        },
+      });
+    } else {
+      alert('fill Information before Submit');
+    }
   }
 
   backToHomepage() {

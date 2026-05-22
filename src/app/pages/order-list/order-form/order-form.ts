@@ -43,35 +43,39 @@ export class OrderForm {
   }
 
   onSubmit() {
-    const orderUpdateData: OrderReq = {
-      orderNumber: this.orderForm.value.orderNumber!,
-      vendorName: this.orderForm.value.vendorName!,
-      orderDate: this.orderForm.value.orderDate!,
-      orderTotal: this.orderForm.value.orderTotal!,
-    };
+    if (this.orderForm.valid) {
+      const orderUpdateData: OrderReq = {
+        orderNumber: this.orderForm.value.orderNumber!,
+        vendorName: this.orderForm.value.vendorName!,
+        orderDate: this.orderForm.value.orderDate!,
+        orderTotal: this.orderForm.value.orderTotal!,
+      };
 
-    if (this.id) {
-      this.orderService.updateOrder(this.id, orderUpdateData).subscribe({
-        next: () => {
-          alert('Data Updated');
-          this.router.navigate(['/orderlist']);
-        },
-        error: (err) => {
-          console.log('Error ', err);
-          alert('Error Message: ' + err.message);
-        },
-      });
+      if (this.id) {
+        this.orderService.updateOrder(this.id, orderUpdateData).subscribe({
+          next: () => {
+            alert('Data Updated');
+            this.router.navigate(['/orderlist']);
+          },
+          error: (err) => {
+            console.log('Error ', err);
+            alert('Error Message: ' + err.message);
+          },
+        });
+      } else {
+        this.orderService.insertOrder(orderUpdateData).subscribe({
+          next: () => {
+            alert('Data Added');
+            this.router.navigate(['/orderlist']);
+          },
+          error: (err) => {
+            console.log('Error ', err);
+            alert('Error Message: ' + err.message);
+          },
+        });
+      }
     } else {
-      this.orderService.insertOrder(orderUpdateData).subscribe({
-        next: () => {
-          alert('Data Added');
-          this.router.navigate(['/orderlist']);
-        },
-        error: (err) => {
-          console.log('Error ', err);
-          alert('Error Message: ' + err.message);
-        },
-      });
+      alert('Please Provide Necessory Information');
     }
   }
 
