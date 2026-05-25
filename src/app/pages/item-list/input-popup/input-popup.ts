@@ -27,7 +27,7 @@ export class InputPopup {
       this.itemForm.value.itemNameForm?.trim() === '' ||
       Number(this.itemForm.value.itemCodeForm) === 0
     ) {
-      alert('You cannot submit with Empty Feilds');
+      alert('You cannot submit with Empty fields');
       return;
     }
     if (this.itemForm.valid) {

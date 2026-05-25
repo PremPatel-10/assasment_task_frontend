@@ -28,8 +28,8 @@ export class OrderService {
     return this.http.delete(`https://localhost:7254/order/delete/${id}`);
   }
 
-  searchOrder(item: string) {
-    return this.http.get<Order[]>(`https://localhost:7254/order/search/${item}`);
+  searchOrder(vendorName: string) {
+    return this.http.get<Order[]>(`https://localhost:7254/order/search/${vendorName}`);
   }
 
   itemPages(pageNumber: number, pageSize: number) {
