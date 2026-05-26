@@ -120,4 +120,9 @@ export class OrderList {
       this.loadPage();
     }
   }
+
+  /*---------------------------------------------------------------------------------------------------*/
+  goToDetails(id: number) {
+    this.router.navigate(['orderdetails/order', id]);
+  }
 }

@@ -1,0 +1,53 @@
+<form [formGroup]="detailsForm">
+  <div class="mb-3">
+    <label for="orderId" class="form-label">Enter Order Id</label>
+    <input
+      type="number"
+      class="form-control"
+      id="orderId"
+      placeholder="Order Id"
+      formControlName="orderId"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="itemId" class="form-label">Enter Item Id</label>
+    <input
+      type="number"
+      class="form-control"
+      id="itemId"
+      placeholder="Item Id"
+      formControlName="itemId"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="price" class="form-label">Enter Price</label>
+    <input
+      type="number"
+      class="form-control"
+      id="price"
+      placeholder="Price"
+      formControlName="price"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Enter Quantity</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantity"
+      placeholder="Order Quantity"
+      formControlName="quantity"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="total" class="form-label">Total: {{ Total() }}</label>
+  </div>
+  <div class="submitBtn">
+    <button type="button" class="btn btn-primary me-3">Back</button>
+    <button type="reset" class="btn btn-secondary me-3">Reset</button>
+    <button type="submit" class="btn btn-success">Submit</button>
+  </div>
+</form>
