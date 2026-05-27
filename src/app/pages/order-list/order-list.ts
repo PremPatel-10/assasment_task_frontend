@@ -126,6 +126,13 @@ export class OrderList {
   /*---------------------------------------------------------------------------------------------------*/
 
   goToDetails(id: number) {
-    this.router.navigate(['orderlist/orderdetails/edit-details', id]);
+    this.orderDetailsService.getDetailsByOId(id).subscribe({
+      next: () => {
+        this.router.navigate(['orderlist/orderdetails/edit-details', id]);
+      },
+      error: () => {
+        this.router.navigate(['orderlist/orderdetails/add-details', id]);
+      },
+    });
   }
 }

@@ -1,11 +1,11 @@
 <form [formGroup]="detailsForm">
   <div class="mb-3">
     <label for="orderId" class="form-label">Enter Order Id</label>
-    <input type="text" class="form-control" formControlName="orderId" readonly />
+    <input type="number" id="orderId" class="form-control" formControlName="orderId" readonly />
   </div>
   <div class="mb-3">
     <label for="itemId" class="form-label">Enter Item Id</label>
-    <select class="form-select" formControlName="itemId">
+    <select class="form-select" formControlName="itemId" id="itemId">
       <option value="">Select Item</option>
 
       @for (item of allItems(); track item.itemId) {
@@ -38,7 +38,7 @@
     />
   </div>
   <div class="mb-3">
-    <label for="total" class="form-label"> Final Total: {{ Total() }}</label>
+    <p>Final Total: {{ Total() }}</p>
   </div>
   <div class="submitBtn">
     <button type="button" class="btn btn-primary me-3" (click)="goBack()">Back</button>

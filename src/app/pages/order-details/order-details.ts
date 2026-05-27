@@ -37,6 +37,7 @@ export class OrderDetails {
 
   id: number = 1;
   Total = signal<number>(0);
+  detailId: number = 0;
   ngOnInit() {
     this.route.paramMap.subscribe((param) => {
       this.id = Number(param.get('id'));
@@ -57,6 +58,15 @@ export class OrderDetails {
         this.allItems.set(data);
       },
     });
+
+    this.orderDetailsService.getDetailsByOId(this.id).subscribe({
+      next: (data) => {
+        this.detailId = data.orderId;
+      },
+      error: () => {
+        this.detailId = 0;
+      },
+    });
   }
 
   onSubmit() {
@@ -66,17 +76,27 @@ export class OrderDetails {
         itemId: this.detailsForm.value.itemId!,
         price: this.detailsForm.value.price!,
         quantity: this.detailsForm.value.quantity!,
-        total: this.Total(),
       };
 
-      this.orderDetailsService.postDetails(detailsData).subscribe({
-        next: () => {
-          alert('Details Added');
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+      if (this.detailId) {
+        this.orderDetailsService.putDetails(this.detailId, detailsData).subscribe({
+          next: () => {
+            alert('Details Updated Successfully');
+          },
+          error: (err) => {
+            alert('Details Updation Failed, Error: ' + err.Messege);
+          },
+        });
+      } else {
+        this.orderDetailsService.postDetails(detailsData).subscribe({
+          next: () => {
+            alert('Detail Added Successfully');
+          },
+          error: (err) => {
+            alert('Failed to Add Details, Occurs Error: ' + err.Messege);
+          },
+        });
+      }
     }
   }
 

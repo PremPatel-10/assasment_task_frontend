@@ -17,5 +17,4 @@ export interface DetailsReq {
   itemId: number;
   price: number;
   quantity: number;
-  total: number;
 }
