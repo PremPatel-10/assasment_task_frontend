@@ -1,24 +1,17 @@
 <form [formGroup]="detailsForm">
   <div class="mb-3">
     <label for="orderId" class="form-label">Enter Order Id</label>
-    <input
-      type="number"
-      class="form-control"
-      id="orderId"
-      placeholder="Order Id"
-      formControlName="orderId"
-    />
+    <input type="text" class="form-control" formControlName="orderId" readonly />
   </div>
   <div class="mb-3">
     <label for="itemId" class="form-label">Enter Item Id</label>
-    <input
-      type="number"
-      class="form-control"
-      id="itemId"
-      placeholder="Item Id"
-      formControlName="itemId"
-      required
-    />
+    <select class="form-select" formControlName="itemId">
+      <option value="">Select Item</option>
+
+      @for (item of allItems(); track item.itemId) {
+        <option [value]="item.itemId">{{ item.itemId }}&nbsp;{{ item.itemName }}</option>
+      }
+    </select>
   </div>
   <div class="mb-3">
     <label for="price" class="form-label">Enter Price</label>
@@ -28,6 +21,7 @@
       id="price"
       placeholder="Price"
       formControlName="price"
+      (input)="calculateTotal()"
       required
     />
   </div>
@@ -39,15 +33,15 @@
       id="quantity"
       placeholder="Order Quantity"
       formControlName="quantity"
+      (input)="calculateTotal()"
       required
     />
   </div>
   <div class="mb-3">
-    <label for="total" class="form-label">Total: {{ Total() }}</label>
+    <label for="total" class="form-label"> Final Total: {{ Total() }}</label>
   </div>
   <div class="submitBtn">
-    <button type="button" class="btn btn-primary me-3">Back</button>
-    <button type="reset" class="btn btn-secondary me-3">Reset</button>
-    <button type="submit" class="btn btn-success">Submit</button>
+    <button type="button" class="btn btn-primary me-3" (click)="goBack()">Back</button>
+    <button type="button" class="btn btn-success" (click)="onSubmit()">Submit</button>
   </div>
 </form>

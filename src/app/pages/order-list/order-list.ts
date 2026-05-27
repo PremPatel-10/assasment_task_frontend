@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { OrderService } from '../../services/order-service';
 import { Router } from '@angular/router';
 import { Order } from '../../Models/Order';
+import { OrderDetailsService } from '../../services/order-details-service';
 
 @Component({
   selector: 'app-order-list',
@@ -16,6 +17,7 @@ export class OrderList {
   constructor(
     private orderService: OrderService,
     private router: Router,
+    private orderDetailsService: OrderDetailsService,
   ) {}
 
   ngOnInit() {
@@ -122,7 +124,8 @@ export class OrderList {
   }
 
   /*---------------------------------------------------------------------------------------------------*/
+
   goToDetails(id: number) {
-    this.router.navigate(['orderdetails/order', id]);
+    this.router.navigate(['orderlist/orderdetails/edit-details', id]);
   }
 }

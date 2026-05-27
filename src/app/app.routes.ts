@@ -13,5 +13,6 @@ export const routes: Routes = [
   { path: 'itemlist/edit/item/:id', component: UpdatePage },
   { path: 'orderlist/add', component: OrderForm },
   { path: 'orderlist/edit/order/:id', component: OrderForm },
-  { path: 'orderdetails/order/:id', component: OrderDetails },
+  { path: 'orderlist/orderdetails/add-details/:id', component: OrderDetails },
+  { path: 'orderlist/orderdetails/edit-details/:id', component: OrderDetails },
 ];

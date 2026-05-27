@@ -15,7 +15,7 @@ export interface Details {
 export interface DetailsReq {
   orderId: number;
   itemId: number;
-  price: Number;
+  price: number;
   quantity: number;
-  total: Number;
+  total: number;
 }
