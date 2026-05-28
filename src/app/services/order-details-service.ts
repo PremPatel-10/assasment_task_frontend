@@ -23,4 +23,7 @@ export class OrderDetailsService {
   putDetails(id: number, data: DetailsReq) {
     return this.http.put<Details>(`https://localhost:7254/orderDetail/editDetails/${id}`, data);
   }
+  postBulkDetails(data: DetailsReq[]) {
+    return this.http.post(`https://localhost:7254/orderDetail/bulk`, data);
+  }
 }

@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OrderDetailsService } from '../../services/order-details-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Details, DetailsReq } from '../../Models/Details';
@@ -30,14 +30,16 @@ export class OrderDetails {
 
   detailsForm = new FormGroup({
     orderId: new FormControl(0, [Validators.required]),
-    itemId: new FormControl(0, [Validators.required]),
-    price: new FormControl(0, [Validators.required]),
-    quantity: new FormControl(0, [Validators.required]),
+    details: new FormArray([]),
   });
 
-  id: number = 1;
-  Total = signal<number>(0);
-  detailId: number = 0;
+  get detailsArray() {
+    return this.detailsForm.get('details') as FormArray;
+  }
+
+  id: number = 0;
+  // Total = signal<number>(0);
+  // detailId: number = 0;
   ngOnInit() {
     this.route.paramMap.subscribe((param) => {
       this.id = Number(param.get('id'));
@@ -59,52 +61,82 @@ export class OrderDetails {
       },
     });
 
-    this.orderDetailsService.getDetailsByOId(this.id).subscribe({
-      next: (data) => {
-        this.detailId = data.orderId;
-      },
-      error: () => {
-        this.detailId = 0;
-      },
-    });
+    this.addRow();
   }
 
-  onSubmit() {
-    if (this.detailsForm.valid) {
-      const detailsData: DetailsReq = {
-        orderId: this.detailsForm.value.orderId!,
-        itemId: this.detailsForm.value.itemId!,
-        price: this.detailsForm.value.price!,
-        quantity: this.detailsForm.value.quantity!,
-      };
+  //------------------------------------------------------------------------------------------------------
+  addRow() {
+    const row = new FormGroup({
+      itemId: new FormControl(0, Validators.required),
+      price: new FormControl(0, Validators.required),
+      quantity: new FormControl(0, Validators.required),
+      total: new FormControl(0),
+    });
 
-      if (this.detailId) {
-        this.orderDetailsService.putDetails(this.detailId, detailsData).subscribe({
-          next: () => {
-            alert('Details Updated Successfully');
-          },
-          error: (err) => {
-            alert('Details Updation Failed, Error: ' + err.Messege);
-          },
-        });
-      } else {
-        this.orderDetailsService.postDetails(detailsData).subscribe({
-          next: () => {
-            alert('Detail Added Successfully');
-          },
-          error: (err) => {
-            alert('Failed to Add Details, Occurs Error: ' + err.Messege);
-          },
-        });
-      }
+    this.detailsArray.push(row);
+  }
+
+  //--------------------------------------------------------------------------------------------------------
+
+  saveOrders() {
+    if (this.detailsForm.valid) {
+      const orderId = this.detailsForm.value.orderId!;
+      const bulkData: DetailsReq[] = this.detailsArray.value.map((data: DetailsReq) => ({
+        orderId: orderId,
+        itemId: data.itemId,
+        price: data.price,
+        quantity: data.quantity,
+      }));
+      this.orderDetailsService.postBulkDetails(bulkData).subscribe({
+        next: () => {
+          alert('Details Added Successfully');
+          this.router.navigate(['/orderlist']);
+        },
+        error: (err) => {
+          alert('Failed : ' + err.message);
+        },
+      });
     }
   }
 
-  calculateTotal() {
-    const price = this.detailsForm.value.price || 0;
-    const quantity = this.detailsForm.value.quantity || 0;
+  // onSubmit() {
+  //   if (this.detailsForm.valid) {
+  //    const payload: DetailsReq[] = (this.detailsArray.value as any[]).map((x) => ({
+  //      orderId: x.orderId,
+  //      itemId: x.itemId,
+  //      price: x.price,
+  //      quantity: x.quantity,
+  //    }));
 
-    this.Total.set(price * quantity);
+  //     if (this.detailId) {
+  //       this.orderDetailsService.putDetails(this.detailId, detailsData).subscribe({
+  //         next: () => {
+  //           alert('Details Updated Successfully');
+  //           this.router.navigate(['/orderlist']);
+  //         },
+  //         error: (err) => {
+  //           alert('Details Updation Failed, Error: ' + err.Messege);
+  //         },
+  //       });
+  //     } else {
+  //       this.orderDetailsService.postDetails(detailsData).subscribe({
+  //         next: () => {
+  //           alert('Detail Added Successfully');
+  //           this.router.navigate(['/orderlist']);
+  //         },
+  //         error: (err) => {
+  //           alert('Failed to Add Details, Occurs Error: ' + err.Messege);
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
+
+  calculateTotal(index: number) {
+    const row = this.detailsArray.at(index);
+    const price = Number(row.get('price')?.value || 0);
+    const quantity = Number(row.get('quantity')?.value || 0);
+    row.get('total')?.setValue(price * quantity);
   }
 
   goBack() {
