@@ -38,6 +38,7 @@ export class OrderDetails {
   }
 
   id: number = 0;
+  isEdited: boolean = false;
   // Total = signal<number>(0);
   // detailId: number = 0;
   ngOnInit() {
@@ -46,6 +47,21 @@ export class OrderDetails {
 
       this.detailsForm.patchValue({
         orderId: this.id,
+      });
+
+      this.orderDetailsService.getBulkDetails(this.id).subscribe((data) => {
+        this.isEdited = data.length > 0;
+
+        // ig data exist
+        if (this.isEdited) {
+          this.detailsArray.clear();
+
+          data.forEach((item) => {
+            this.detailsArray.push(this.createDetailRow(item));
+          });
+        } else {
+          this.addRow();
+        }
       });
     });
 
@@ -60,77 +76,62 @@ export class OrderDetails {
         this.allItems.set(data);
       },
     });
-
-    this.addRow();
   }
 
   //------------------------------------------------------------------------------------------------------
   addRow() {
-    const row = new FormGroup({
-      itemId: new FormControl(0, Validators.required),
-      price: new FormControl(0, Validators.required),
-      quantity: new FormControl(0, Validators.required),
-      total: new FormControl(0),
+    this.detailsArray.push(this.createDetailRow());
+  }
+  createDetailRow(item?: Details) {
+    return new FormGroup({
+      itemId: new FormControl(item?.itemId || 0, Validators.required),
+      price: new FormControl(item?.price || 0, Validators.required),
+      quantity: new FormControl(item?.quantity || 0, Validators.required),
+      total: new FormControl(item?.total || 0),
     });
-
-    this.detailsArray.push(row);
   }
 
   //--------------------------------------------------------------------------------------------------------
 
   saveOrders() {
     if (this.detailsForm.valid) {
-      const orderId = this.detailsForm.value.orderId!;
-      const bulkData: DetailsReq[] = this.detailsArray.value.map((data: DetailsReq) => ({
+      const orderId = Number(this.detailsForm.value.orderId);
+
+      const bulkData: DetailsReq[] = this.detailsArray.controls.map((row) => ({
         orderId: orderId,
-        itemId: data.itemId,
-        price: data.price,
-        quantity: data.quantity,
+        itemId: Number(row.get('itemId')?.value),
+        price: Number(row.get('price')?.value),
+        quantity: Number(row.get('quantity')?.value),
+        total: Number(row.get('total')?.value),
       }));
-      this.orderDetailsService.postBulkDetails(bulkData).subscribe({
-        next: () => {
-          alert('Details Added Successfully');
-          this.router.navigate(['/orderlist']);
-        },
-        error: (err) => {
-          alert('Failed : ' + err.Messege);
-        },
-      });
+
+      if (this.isEdited) {
+        this.orderDetailsService.putBulkDetails(orderId, bulkData).subscribe({
+          next: () => {
+            alert('Details Updated Successfully');
+            this.router.navigate(['/orderlist']);
+          },
+
+          error: (err) => {
+            console.log(err);
+            alert('Failed : ' + err.error);
+          },
+        });
+      } else {
+        this.orderDetailsService.postBulkDetails(bulkData).subscribe({
+          next: () => {
+            alert('Details Added Successfully');
+            this.router.navigate(['/orderlist']);
+          },
+
+          error: (err) => {
+            console.log(err);
+            alert('Failed : ' + err.error);
+          },
+        });
+      }
     }
   }
-
-  // onSubmit() {
-  //   if (this.detailsForm.valid) {
-  //    const payload: DetailsReq[] = (this.detailsArray.value as any[]).map((x) => ({
-  //      orderId: x.orderId,
-  //      itemId: x.itemId,
-  //      price: x.price,
-  //      quantity: x.quantity,
-  //    }));
-
-  //     if (this.detailId) {
-  //       this.orderDetailsService.putDetails(this.detailId, detailsData).subscribe({
-  //         next: () => {
-  //           alert('Details Updated Successfully');
-  //           this.router.navigate(['/orderlist']);
-  //         },
-  //         error: (err) => {
-  //           alert('Details Updation Failed, Error: ' + err.Messege);
-  //         },
-  //       });
-  //     } else {
-  //       this.orderDetailsService.postDetails(detailsData).subscribe({
-  //         next: () => {
-  //           alert('Detail Added Successfully');
-  //           this.router.navigate(['/orderlist']);
-  //         },
-  //         error: (err) => {
-  //           alert('Failed to Add Details, Occurs Error: ' + err.Messege);
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
 
   calculateTotal(index: number) {
     const row = this.detailsArray.at(index);
