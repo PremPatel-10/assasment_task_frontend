@@ -38,7 +38,7 @@ export class OrderDetails {
   }
 
   id: number = 0;
-  isEdited: boolean = false;
+  isExist: boolean = false;
   // Total = signal<number>(0);
   // detailId: number = 0;
   ngOnInit() {
@@ -50,10 +50,10 @@ export class OrderDetails {
       });
 
       this.orderDetailsService.getBulkDetails(this.id).subscribe((data) => {
-        this.isEdited = data.length > 0;
+        this.isExist = data.length > 0;
 
         // ig data exist
-        if (this.isEdited) {
+        if (this.isExist) {
           this.detailsArray.clear();
 
           data.forEach((item) => {
@@ -105,7 +105,7 @@ export class OrderDetails {
         total: Number(row.get('total')?.value),
       }));
 
-      if (this.isEdited) {
+      if (this.isExist) {
         this.orderDetailsService.putBulkDetails(orderId, bulkData).subscribe({
           next: () => {
             alert('Details Updated Successfully');
@@ -114,7 +114,7 @@ export class OrderDetails {
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err.error);
+            alert('Failed : ' + err);
           },
         });
       } else {
