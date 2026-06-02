@@ -29,7 +29,7 @@ export class OrderDetails {
   ) {}
 
   detailsForm = new FormGroup({
-    orderId: new FormControl(0, [Validators.required]),
+    orderId: new FormControl<number | null>(null, [Validators.required]),
     details: new FormArray([]),
   });
 
@@ -57,10 +57,17 @@ export class OrderDetails {
           this.detailsArray.clear();
 
           data.forEach((item) => {
-            this.detailsArray.push(this.createDetailRow(item));
+            console.log(item);
+            // this.detailsArray.push(this.createDetailRow(item));
+            this.detailsArray.push(
+              new FormGroup({
+                itemId: new FormControl(item.itemId),
+                price: new FormControl(item.price),
+                quantity: new FormControl(item.quantity),
+                total: new FormControl(item.total),
+              }),
+            );
           });
-        } else {
-          this.addRow();
         }
       });
     });
@@ -76,20 +83,29 @@ export class OrderDetails {
         this.allItems.set(data);
       },
     });
+    // this.detailsArray.push(this.createDetailRow());
+    console.log(this.detailsArray);
   }
 
   //------------------------------------------------------------------------------------------------------
   addRow() {
-    this.detailsArray.push(this.createDetailRow());
+    this.detailsArray.push(
+      new FormGroup({
+        itemId: new FormControl<number | null>(null, Validators.required),
+        price: new FormControl(0, Validators.required),
+        quantity: new FormControl(0, Validators.required),
+        total: new FormControl(0),
+      }),
+    );
   }
-  createDetailRow(item?: Details) {
-    return new FormGroup({
-      itemId: new FormControl(item?.itemId || 0, Validators.required),
-      price: new FormControl(item?.price || 0, Validators.required),
-      quantity: new FormControl(item?.quantity || 0, Validators.required),
-      total: new FormControl(item?.total || 0),
-    });
-  }
+  // createDetailRow(item?: Details) {
+  //   return new FormGroup({
+  // itemId: new FormControl(item?.itemId || 0, Validators.required),
+  // price: new FormControl(item?.price || 0, Validators.required),
+  // quantity: new FormControl(item?.quantity || 0, Validators.required),
+  // total: new FormControl(item?.total || 0),
+  //   });
+  // }
 
   //--------------------------------------------------------------------------------------------------------
 
@@ -114,7 +130,7 @@ export class OrderDetails {
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err);
+            alert('Failed : ' + err.error);
           },
         });
       } else {
