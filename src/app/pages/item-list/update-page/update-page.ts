@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, isActive, Router } from '@angular/router';
 import { ItemService } from '../../../services/item-service';
 import { ItemReq } from '../../../Models/item';
 
@@ -15,6 +15,7 @@ export class UpdatePage {
   itemForm = new FormGroup({
     itemName: new FormControl('', [Validators.required]),
     itemCode: new FormControl(0, [Validators.required]),
+    isActive: new FormControl(false),
   });
 
   constructor(
@@ -46,6 +47,7 @@ export class UpdatePage {
       const itemUpdateData: ItemReq = {
         itemName: this.itemForm.value.itemName!,
         itemCode: this.itemForm.value.itemCode!,
+        isActive: this.itemForm.value.isActive!,
       };
 
       this.itemService.updateItem(this.id, itemUpdateData).subscribe({

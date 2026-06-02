@@ -8,31 +8,33 @@ import { HttpClient } from '@angular/common/http';
 export class OrderService {
   constructor(private http: HttpClient) {}
 
+  apiUrl: string = 'https://localhost:7254/order';
+
   getAllOrder() {
-    return this.http.get<Order[]>(`https://localhost:7254/order/allOrder`);
+    return this.http.get<Order[]>(`${this.apiUrl}/allOrder`);
   }
 
   getOrderById(id: number) {
-    return this.http.get<Order>(`https://localhost:7254/order/${id}`);
+    return this.http.get<Order>(`${this.apiUrl}/${id}`);
   }
 
   insertOrder(Data: OrderReq) {
-    return this.http.post<Order>(`https://localhost:7254/Order/add`, Data);
+    return this.http.post<Order>(`${this.apiUrl}/add`, Data);
   }
 
   updateOrder(id: number, data: OrderReq) {
-    return this.http.put<Order>(`https://localhost:7254/order/update/${id}`, data);
+    return this.http.put<Order>(`${this.apiUrl}/update/${id}`, data);
   }
 
   deleteOrder(id: number) {
-    return this.http.delete(`https://localhost:7254/order/delete/${id}`);
+    return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
 
   searchOrder(vendorName: string) {
-    return this.http.get<Order[]>(`https://localhost:7254/order/search/${vendorName}`);
+    return this.http.get<Order[]>(`${this.apiUrl}/search/${vendorName}`);
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Order[]>(`https://localhost:7254/order/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<Order[]>(`${this.apiUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

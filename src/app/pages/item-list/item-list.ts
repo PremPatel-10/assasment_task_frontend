@@ -119,7 +119,9 @@ export class ItemList {
   loadPage() {
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
-        this.pageData.set(data);
+        console.log(data);
+        this.pageData.set(data.filter((c) => c.isActive === true));
+
         this.finalPage = Math.ceil(this.totalItemCount / this.pageSize);
       },
       error: (err) => {
@@ -139,6 +141,22 @@ export class ItemList {
     if (this.pageNumber > 1) {
       this.pageNumber--;
       this.loadPage();
+    }
+  }
+
+  inpValidate() {
+    let inp: string = (document.querySelector('#searchBar') as HTMLInputElement).value;
+
+    const numReg: string = '@';
+
+    // if (inp.includes(numReg)) {
+    //   alert('dont add numbers');
+    // }
+
+    for (let i = 0; i < inp.length; i++) {
+      if (inp.charAt(i) == numReg) {
+        alert('dont add @');
+      }
     }
   }
 }

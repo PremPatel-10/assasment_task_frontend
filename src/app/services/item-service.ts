@@ -8,31 +8,37 @@ import { Item, ItemReq } from '../Models/item';
 export class ItemService {
   constructor(private http: HttpClient) {}
 
+  apiUrl: string = 'https://localhost:7254/item';
+
   getAllItem() {
-    return this.http.get<Item[]>(`https://localhost:7254/item/allItems`);
+    return this.http.get<Item[]>(`${this.apiUrl}/allItems`);
+  }
+
+  getActiveItems() {
+    return this.http.get<Item[]>(`${this.apiUrl}/activeItems`);
   }
 
   getItemById(id: number) {
-    return this.http.get<Item>(`https://localhost:7254/item/${id}`);
+    return this.http.get<Item>(`${this.apiUrl}/${id}`);
   }
 
   insertItem(Data: ItemReq) {
-    return this.http.post<Item>(`https://localhost:7254/item/add`, Data);
+    return this.http.post<Item>(`${this.apiUrl}/add`, Data);
   }
 
   updateItem(id: number, data: ItemReq) {
-    return this.http.put<Item>(`https://localhost:7254/item/update/${id}`, data);
+    return this.http.put<Item>(`${this.apiUrl}/update/${id}`, data);
   }
 
   deleteItem(id: number) {
-    return this.http.delete(`https://localhost:7254/item/delete/${id}`);
+    return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
 
   searchItem(item: string) {
-    return this.http.get<Item[]>(`https://localhost:7254/item/search/${item}`);
+    return this.http.get<Item[]>(`${this.apiUrl}/search/${item}`);
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Item[]>(`https://localhost:7254/item/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<Item[]>(`${this.apiUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

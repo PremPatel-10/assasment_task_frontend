@@ -1,6 +1,6 @@
 <h3>Order List</h3>
 <div class="heading">
-  <input type="text" placeholder="Serch your Order" id="searchBar" />
+  <input type="text" placeholder="Serch your Order" id="searchBar" (keydown.enter)="onSearch()" />
   <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
   <button type="button" class="btn btn-sm add" (click)="addOrder()">Add Order</button>
 </div>

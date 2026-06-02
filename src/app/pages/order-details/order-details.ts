@@ -71,7 +71,7 @@ export class OrderDetails {
       },
     });
 
-    this.itemService.getAllItem().subscribe({
+    this.itemService.getActiveItems().subscribe({
       next: (data) => {
         this.allItems.set(data);
       },
@@ -114,19 +114,20 @@ export class OrderDetails {
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err);
+            alert('Failed : ' + err.message);
           },
         });
       } else {
         this.orderDetailsService.postBulkDetails(bulkData).subscribe({
-          next: () => {
-            alert('Details Added Successfully');
+          next: (data) => {
+            alert(data.message);
+            console.log(data.message);
             this.router.navigate(['/orderlist']);
           },
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err.error);
+            alert('Failed : ' + err.message);
           },
         });
       }
