@@ -57,8 +57,6 @@ export class OrderDetails {
           this.detailsArray.clear();
 
           data.forEach((item) => {
-            console.log(item);
-            // this.detailsArray.push(this.createDetailRow(item));
             this.detailsArray.push(
               new FormGroup({
                 itemId: new FormControl(item.itemId),
