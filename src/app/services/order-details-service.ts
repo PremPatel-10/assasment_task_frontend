@@ -28,7 +28,7 @@ export class OrderDetailsService {
     return this.http.post(`https://localhost:7254/orderDetail/bulk`, data);
   }
 
-  getBulkDetails(id: number) {
+  getBulkDetailsById(id: number) {
     return this.http.get<Details[]>(`https://localhost:7254/orderDetail/getBulk/${id}`);
   }
 

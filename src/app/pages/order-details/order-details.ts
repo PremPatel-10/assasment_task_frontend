@@ -39,6 +39,7 @@ export class OrderDetails {
 
   id: number = 0;
   isExist: boolean = false;
+  existingData = signal<Details[]>([]);
   // Total = signal<number>(0);
   // detailId: number = 0;
   ngOnInit() {
@@ -49,7 +50,11 @@ export class OrderDetails {
         orderId: this.id,
       });
 
-      this.orderDetailsService.getBulkDetails(this.id).subscribe((data) => {
+      this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
+        this.existingData.set(data);
+      });
+
+      this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
         this.isExist = data.length > 0;
 
         // ig data exist
