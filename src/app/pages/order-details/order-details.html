@@ -28,6 +28,12 @@
           <td>{{ e.total }}</td>
         </tr>
       }
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
       @for (row of detailsArray.controls; track $index) {
         <tr [formGroupName]="$index">
           <td>

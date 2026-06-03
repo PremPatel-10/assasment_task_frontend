@@ -50,8 +50,13 @@ export class OrderDetails {
         orderId: this.id,
       });
 
-      this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
-        this.existingData.set(data);
+      this.orderDetailsService.getBulkDetailsById(this.id).subscribe({
+        next: (data) => {
+          this.existingData.set(data);
+        },
+        error: () => {
+          alert('No Detials Exist for This Order');
+        },
       });
 
       this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
