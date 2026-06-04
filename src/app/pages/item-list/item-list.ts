@@ -32,15 +32,7 @@ export class ItemList {
   /*---------------------------------------------------------------------------------------------------*/
 
   isPopupOpen = signal<boolean>(false);
-  // itemData: ItemReq | undefined;
   onInsert(inpData: ItemReq) {
-    // const inpItemName = (document.querySelector('#inpItemName') as HTMLInputElement).value;
-    // const inpItemCode = Number((document.querySelector('#inpItemCode') as HTMLInputElement).value);
-    // this.itemData = {
-    //   itemName: inpItemName,
-    //   itemCode: inpItemCode,
-    // };
-
     if (inpData) {
       this.itemService.insertItem(inpData).subscribe({
         next: (data) => {

@@ -40,8 +40,6 @@ export class OrderDetails {
   id: number = 0;
   isExist: boolean = false;
   existingData = signal<Details[]>([]);
-  // Total = signal<number>(0);
-  // detailId: number = 0;
   ngOnInit() {
     this.route.paramMap.subscribe((param) => {
       this.id = Number(param.get('id'));
@@ -62,7 +60,7 @@ export class OrderDetails {
       this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
         this.isExist = data.length > 0;
 
-        // ig data exist
+        // if data exist
         if (this.isExist) {
           this.detailsArray.clear();
 
@@ -91,7 +89,6 @@ export class OrderDetails {
         this.allItems.set(data);
       },
     });
-    // this.detailsArray.push(this.createDetailRow());
     console.log(this.detailsArray);
   }
 
@@ -106,14 +103,6 @@ export class OrderDetails {
       }),
     );
   }
-  // createDetailRow(item?: Details) {
-  //   return new FormGroup({
-  // itemId: new FormControl(item?.itemId || 0, Validators.required),
-  // price: new FormControl(item?.price || 0, Validators.required),
-  // quantity: new FormControl(item?.quantity || 0, Validators.required),
-  // total: new FormControl(item?.total || 0),
-  //   });
-  // }
 
   //--------------------------------------------------------------------------------------------------------
 
