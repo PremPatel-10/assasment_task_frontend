@@ -120,7 +120,7 @@ export class ItemList {
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
         console.log(data);
-        this.pageData.set(data.filter((c) => c.isActive === true));
+        this.pageData.set(data);
 
         this.finalPage = Math.ceil(this.totalItemCount / this.pageSize);
       },
