@@ -15,7 +15,7 @@
     </thead>
 
     <tbody formArrayName="details">
-      @for (e of existingData(); track e.orderId) {
+      @for (e of existingData(); track e.orderDetailId) {
         <tr>
           <!-- <td>{{ e.itemId }}</td> -->
           @for (item of allItems(); track item.itemId) {
