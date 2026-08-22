@@ -15,8 +15,11 @@ export class OrderForm {
     orderNumber: new FormControl(0, [Validators.required]),
     vendorName: new FormControl('', [Validators.required]),
     orderDate: new FormControl('', [Validators.required]),
-    orderTotal: new FormControl(0, [Validators.required]),
   });
+
+  // Read-only, server-computed — the sum of this order's line-item totals. Not part of the form
+  // group so it's never sent back to the API; OrderTotal has no input on create/update anymore.
+  computedOrderTotal: number | null = null;
 
   constructor(
     private orderService: OrderService,
@@ -33,6 +36,7 @@ export class OrderForm {
         this.orderService.getOrderById(this.id).subscribe({
           next: (data) => {
             this.orderForm.patchValue(data);
+            this.computedOrderTotal = data.orderTotal;
           },
           error: (err) => {
             console.log('Error: ', err);
@@ -48,7 +52,6 @@ export class OrderForm {
         orderNumber: this.orderForm.value.orderNumber!,
         vendorName: this.orderForm.value.vendorName!,
         orderDate: this.orderForm.value.orderDate!,
-        orderTotal: this.orderForm.value.orderTotal!,
       };
 
       if (this.id) {

@@ -2,7 +2,9 @@
 <div class="heading">
   <input type="text" placeholder="Serch your item" [formControl]="searchTerm" />
   <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
-  <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
+  @if (authService.isAdmin()) {
+    <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
+  }
 </div>
 @if (isPopupOpen()) {
   <app-input-popup
@@ -26,12 +28,14 @@
       <td>{{ l.itemName }}</td>
       <td>{{ l.itemCode }}</td>
       <td>
-        <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.itemId)">
-          Delete
-        </button>
-        <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.itemId)">
-          Update
-        </button>
+        @if (authService.isAdmin()) {
+          <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.itemId)">
+            Delete
+          </button>
+          <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.itemId)">
+            Update
+          </button>
+        }
       </td>
     </tr>
   }

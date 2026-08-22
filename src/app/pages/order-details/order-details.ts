@@ -110,12 +110,12 @@ export class OrderDetails {
     if (this.detailsForm.valid) {
       const orderId = Number(this.detailsForm.value.orderId);
 
+      // total is computed server-side from price * quantity — not sent to the API.
       const bulkData: DetailsReq[] = this.detailsArray.controls.map((row) => ({
         orderId: orderId,
         itemId: Number(row.get('itemId')?.value),
         price: Number(row.get('price')?.value),
         quantity: Number(row.get('quantity')?.value),
-        total: Number(row.get('total')?.value),
       }));
 
       if (this.isExist) {

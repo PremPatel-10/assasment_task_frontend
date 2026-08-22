@@ -1,0 +1,27 @@
+<h3>Login</h3>
+<form [formGroup]="loginForm" class="col-md-4">
+  <div class="mb-3">
+    <label for="username" class="form-label">Username</label>
+    <input
+      type="text"
+      class="form-control"
+      id="username"
+      placeholder="Username"
+      formControlName="username"
+    />
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      placeholder="Password"
+      formControlName="password"
+    />
+  </div>
+  <div class="submitBtn">
+    <button type="submit" class="btn btn-success me-3" (click)="onSubmit()">Login</button>
+    <a routerLink="/register">Need an account? Register</a>
+  </div>
+</form>

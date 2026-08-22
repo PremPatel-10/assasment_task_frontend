@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Order } from '../../Models/Order';
 import { OrderDetailsService } from '../../services/order-details-service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-order-list',
@@ -19,15 +20,10 @@ export class OrderList {
     private orderService: OrderService,
     private router: Router,
     private orderDetailsService: OrderDetailsService,
+    public authService: AuthService,
   ) {}
 
   ngOnInit() {
-    //total record for page count
-    this.orderService.getAllOrder().subscribe((data) => {
-      this.totalOrderCount = data.length;
-      console.log('Total Order:', this.totalOrderCount);
-    });
-
     this.loadPage();
   }
 
@@ -100,9 +96,10 @@ export class OrderList {
 
   loadPage() {
     this.orderService.itemPages(this.pageNumber, this.pageSize).subscribe({
-      next: (data) => {
-        this.pageData.set(data);
-        this.finalPage = Math.ceil(this.totalOrderCount / this.pageSize);
+      next: (result) => {
+        this.pageData.set(result.items);
+        this.totalOrderCount = result.totalCount;
+        this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
       },
       error: (err) => {
         console.log('Error: ' + err.message);

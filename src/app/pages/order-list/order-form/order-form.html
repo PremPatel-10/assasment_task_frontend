@@ -31,17 +31,18 @@
       required
     />
   </div>
-  <div class="mb-3">
-    <label for="orderTotal" class="form-label">Enter Order Total</label>
-    <input
-      type="number"
-      class="form-control"
-      id="orderTotal"
-      placeholder="Order Total"
-      formControlName="orderTotal"
-      required
-    />
-  </div>
+  @if (computedOrderTotal !== null) {
+    <div class="mb-3">
+      <label for="orderTotal" class="form-label">Order Total (computed from line items)</label>
+      <input
+        type="number"
+        class="form-control"
+        id="orderTotal"
+        [value]="computedOrderTotal"
+        readonly
+      />
+    </div>
+  }
   <div class="submitBtn">
     <button type="button" class="btn btn-primary me-3" (click)="backToHomepage()">Back</button>
     <button type="reset" class="btn btn-secondary me-3">Reset</button>

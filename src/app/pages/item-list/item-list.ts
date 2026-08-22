@@ -4,6 +4,7 @@ import { Item, ItemReq } from '../../Models/item';
 import { Router } from '@angular/router';
 import { InputPopup } from './input-popup/input-popup';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-item-list',
@@ -18,15 +19,10 @@ export class ItemList {
   constructor(
     private itemService: ItemService,
     private router: Router,
+    public authService: AuthService,
   ) {}
 
   ngOnInit() {
-    //total record for page count
-    this.itemService.getAllItem().subscribe((data) => {
-      this.totalItemCount = data.length;
-      console.log('Total Item:', this.totalItemCount);
-    });
-
     this.loadPage();
   }
 
@@ -111,9 +107,10 @@ export class ItemList {
 
   loadPage() {
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
-      next: (data) => {
-        this.pageData.set(data);
-        this.finalPage = Math.ceil(this.totalItemCount / this.pageSize);
+      next: (result) => {
+        this.pageData.set(result.items);
+        this.totalItemCount = result.totalCount;
+        this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
       },
       error: (err) => {
         console.log('Error: ' + err.message);

@@ -2,7 +2,9 @@
 <div class="heading">
   <input type="text" placeholder="Serch your Order" [formControl]="searchTerm" />
   <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
-  <button type="button" class="btn btn-sm add" (click)="addOrder()">Add Order</button>
+  @if (authService.isAdmin()) {
+    <button type="button" class="btn btn-sm add" (click)="addOrder()">Add Order</button>
+  }
 </div>
 
 <!-- /*---------------------------------------------------------------------------------------------------*/ -->
@@ -23,15 +25,17 @@
       <td>{{ l.orderDate }}</td>
       <td>{{ l.orderTotal }}</td>
       <td>
-        <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.orderId)">
-          Delete
-        </button>
-        <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.orderId)">
-          Update
-        </button>
-        <button type="button" class="btn btn-warning" (click)="goToDetails(l.orderId)">
-          Details
-        </button>
+        @if (authService.isAdmin()) {
+          <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.orderId)">
+            Delete
+          </button>
+          <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.orderId)">
+            Update
+          </button>
+          <button type="button" class="btn btn-warning" (click)="goToDetails(l.orderId)">
+            Details
+          </button>
+        }
       </td>
     </tr>
   }

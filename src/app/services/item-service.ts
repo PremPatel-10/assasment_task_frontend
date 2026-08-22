@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Item, ItemReq } from '../Models/item';
+import { PagedResult } from '../Models/PagedResult';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -36,6 +37,6 @@ export class ItemService {
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Item[]>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<PagedResult<Item>>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

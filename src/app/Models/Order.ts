@@ -10,5 +10,4 @@ export interface OrderReq {
   orderNumber: number;
   vendorName: string;
   orderDate: string;
-  orderTotal: number;
 }

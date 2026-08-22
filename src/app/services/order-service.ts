@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Order, OrderReq } from '../Models/Order';
+import { PagedResult } from '../Models/PagedResult';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -36,6 +37,6 @@ export class OrderService {
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Order[]>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<PagedResult<Order>>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

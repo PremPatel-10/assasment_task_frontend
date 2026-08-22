@@ -1,9 +1,18 @@
 <header>
   <h1>Inventory</h1>
   <div class="navigation">
-    <a routerLink="/">Home</a>
-    <a routerLink="/itemlist">Item List</a>
-    <a routerLink="/orderlist">Order List</a>
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/">Home</a>
+      <a routerLink="/itemlist">Item List</a>
+      <a routerLink="/orderlist">Order List</a>
+      <span class="ms-3">{{ authService.username() }} ({{ authService.role() }})</span>
+      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="onLogout()">
+        Logout
+      </button>
+    } @else {
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    }
   </div>
 </header>
 <div id="outlet">
