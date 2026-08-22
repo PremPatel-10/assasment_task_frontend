@@ -1,38 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Order, OrderReq } from '../Models/Order';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
+  private baseUrl = `${environment.apiUrl}/order`;
+
   constructor(private http: HttpClient) {}
 
   getAllOrder() {
-    return this.http.get<Order[]>(`https://localhost:7254/order/allOrder`);
+    return this.http.get<Order[]>(`${this.baseUrl}/allOrder`);
   }
 
   getOrderById(id: number) {
-    return this.http.get<Order>(`https://localhost:7254/order/${id}`);
+    return this.http.get<Order>(`${this.baseUrl}/${id}`);
   }
 
   insertOrder(Data: OrderReq) {
-    return this.http.post<Order>(`https://localhost:7254/Order/add`, Data);
+    return this.http.post<Order>(`${environment.apiUrl}/Order/add`, Data);
   }
 
   updateOrder(id: number, data: OrderReq) {
-    return this.http.put<Order>(`https://localhost:7254/order/update/${id}`, data);
+    return this.http.put<Order>(`${this.baseUrl}/update/${id}`, data);
   }
 
   deleteOrder(id: number) {
-    return this.http.delete(`https://localhost:7254/order/delete/${id}`);
+    return this.http.delete(`${this.baseUrl}/delete/${id}`);
   }
 
   searchOrder(vendorName: string) {
-    return this.http.get<Order[]>(`https://localhost:7254/order/search/${vendorName}`);
+    return this.http.get<Order[]>(`${this.baseUrl}/search/${vendorName}`);
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Order[]>(`https://localhost:7254/order/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<Order[]>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

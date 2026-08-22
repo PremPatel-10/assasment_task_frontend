@@ -1,38 +1,41 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Item, ItemReq } from '../Models/item';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ItemService {
+  private baseUrl = `${environment.apiUrl}/item`;
+
   constructor(private http: HttpClient) {}
 
   getAllItem() {
-    return this.http.get<Item[]>(`https://localhost:7254/item/allItems`);
+    return this.http.get<Item[]>(`${this.baseUrl}/allItems`);
   }
 
   getItemById(id: number) {
-    return this.http.get<Item>(`https://localhost:7254/item/${id}`);
+    return this.http.get<Item>(`${this.baseUrl}/${id}`);
   }
 
   insertItem(Data: ItemReq) {
-    return this.http.post<Item>(`https://localhost:7254/item/add`, Data);
+    return this.http.post<Item>(`${this.baseUrl}/add`, Data);
   }
 
   updateItem(id: number, data: ItemReq) {
-    return this.http.put<Item>(`https://localhost:7254/item/update/${id}`, data);
+    return this.http.put<Item>(`${this.baseUrl}/update/${id}`, data);
   }
 
   deleteItem(id: number) {
-    return this.http.delete(`https://localhost:7254/item/delete/${id}`);
+    return this.http.delete(`${this.baseUrl}/delete/${id}`);
   }
 
   searchItem(item: string) {
-    return this.http.get<Item[]>(`https://localhost:7254/item/search/${item}`);
+    return this.http.get<Item[]>(`${this.baseUrl}/search/${item}`);
   }
 
   itemPages(pageNumber: number, pageSize: number) {
-    return this.http.get<Item[]>(`https://localhost:7254/item/pages/${pageNumber}/${pageSize}`);
+    return this.http.get<Item[]>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
   }
 }

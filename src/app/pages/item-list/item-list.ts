@@ -3,11 +3,12 @@ import { ItemService } from '../../services/item-service';
 import { Item, ItemReq } from '../../Models/item';
 import { Router } from '@angular/router';
 import { InputPopup } from './input-popup/input-popup';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-item-list',
   standalone: true,
-  imports: [InputPopup],
+  imports: [InputPopup, ReactiveFormsModule],
   templateUrl: './item-list.html',
   styleUrl: './item-list.css',
 })
@@ -60,7 +61,7 @@ export class ItemList {
           this.pageData.update((i) => i?.filter((u) => u.itemId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + err.Message);
+          alert("Data doesn't Deleted with Error: " + err.message);
         },
       });
     } else {
@@ -78,12 +79,12 @@ export class ItemList {
   /*---------------------------------------------------------------------------------------------------*/
 
   searchedItemD = signal<Item[] | undefined>(undefined);
+  searchTerm = new FormControl('');
   onSearch() {
-    let searchedItem = document.querySelector('#searchBar') as HTMLInputElement;
+    const value = this.searchTerm.value?.trim();
+    if (!value) return;
 
-    if (!searchedItem.value.trim()) return;
-
-    this.itemService.searchItem(searchedItem.value).subscribe({
+    this.itemService.searchItem(value).subscribe({
       next: (data) => {
         if (data.length >= 1) {
           this.pageData.set(data);
@@ -91,7 +92,7 @@ export class ItemList {
           alert('Item not Found');
           this.loadPage();
         }
-        searchedItem.value = '';
+        this.searchTerm.reset('');
       },
       error: (err) => {
         console.error(err);
@@ -115,7 +116,7 @@ export class ItemList {
         this.finalPage = Math.ceil(this.totalItemCount / this.pageSize);
       },
       error: (err) => {
-        console.log('Error: ' + err.Message);
+        console.log('Error: ' + err.message);
       },
     });
   }

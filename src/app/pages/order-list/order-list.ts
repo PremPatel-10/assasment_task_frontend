@@ -3,11 +3,12 @@ import { OrderService } from '../../services/order-service';
 import { Router } from '@angular/router';
 import { Order } from '../../Models/Order';
 import { OrderDetailsService } from '../../services/order-details-service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './order-list.html',
   styleUrl: './order-list.css',
 })
@@ -49,7 +50,7 @@ export class OrderList {
           this.pageData.update((o) => o?.filter((o) => o.orderId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + err.Message);
+          alert("Data doesn't Deleted with Error: " + err.message);
         },
       });
     } else {
@@ -67,12 +68,12 @@ export class OrderList {
   /*---------------------------------------------------------------------------------------------------*/
 
   searchedOrderD = signal<Order[] | undefined>(undefined);
+  searchTerm = new FormControl('');
   onSearch() {
-    let searchedOrder = document.querySelector('#searchBar') as HTMLInputElement;
+    const value = this.searchTerm.value?.trim();
+    if (!value) return;
 
-    if (!searchedOrder.value.trim()) return;
-
-    this.orderService.searchOrder(searchedOrder.value).subscribe({
+    this.orderService.searchOrder(value).subscribe({
       next: (data) => {
         if (data.length >= 1) {
           this.pageData.set(data);
@@ -80,7 +81,7 @@ export class OrderList {
           alert('Order Record not Found');
           this.loadPage();
         }
-        searchedOrder.value = '';
+        this.searchTerm.reset('');
       },
       error: (err) => {
         console.error(err);
@@ -104,7 +105,7 @@ export class OrderList {
         this.finalPage = Math.ceil(this.totalOrderCount / this.pageSize);
       },
       error: (err) => {
-        console.log('Error: ' + err.Message);
+        console.log('Error: ' + err.message);
       },
     });
   }
