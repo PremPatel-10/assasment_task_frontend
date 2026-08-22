@@ -39,4 +39,14 @@ export class OrderService {
   itemPages(pageNumber: number, pageSize: number) {
     return this.http.get<PagedResult<Order>>(`${this.baseUrl}/pages/${pageNumber}/${pageSize}`);
   }
+
+  /** Server-generated .xlsx report of this order and its line items. */
+  exportOrderExcel(id: number) {
+    return this.http.get(`${this.baseUrl}/${id}/export/excel`, { responseType: 'blob' });
+  }
+
+  /** Server-generated .pdf report of this order and its line items. */
+  exportOrderPdf(id: number) {
+    return this.http.get(`${this.baseUrl}/${id}/export/pdf`, { responseType: 'blob' });
+  }
 }

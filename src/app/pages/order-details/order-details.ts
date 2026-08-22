@@ -7,6 +7,7 @@ import { Order } from '../../Models/Order';
 import { Item } from '../../Models/item';
 import { OrderService } from '../../services/order-service';
 import { ItemService } from '../../services/item-service';
+import { errorMessage } from '../../utils/http-error';
 
 @Component({
   selector: 'app-order-details',
@@ -127,7 +128,7 @@ export class OrderDetails {
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err.error);
+            alert('Failed : ' + errorMessage(err));
           },
         });
       } else {
@@ -139,7 +140,7 @@ export class OrderDetails {
 
           error: (err) => {
             console.log(err);
-            alert('Failed : ' + err.error);
+            alert('Failed : ' + errorMessage(err));
           },
         });
       }

@@ -6,10 +6,10 @@
     <button type="button" class="btn btn-sm add" (click)="addOrder()">Add Order</button>
   }
   <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportCsv()">
-    Export CSV
+    Export List CSV
   </button>
   <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportPdf()">
-    Export PDF
+    Export List PDF
   </button>
 </div>
 
@@ -42,6 +42,20 @@
             Details
           </button>
         }
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-success actionBtn"
+          (click)="downloadOrderExcel(l.orderId)"
+        >
+          Excel
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger actionBtn"
+          (click)="downloadOrderPdf(l.orderId)"
+        >
+          PDF
+        </button>
       </td>
     </tr>
   }

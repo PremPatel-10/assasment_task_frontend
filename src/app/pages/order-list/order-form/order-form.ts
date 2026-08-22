@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/order-service';
 import { OrderReq } from '../../../Models/Order';
+import { errorMessage } from '../../../utils/http-error';
 @Component({
   selector: 'app-order-form',
   standalone: true,
@@ -62,7 +63,7 @@ export class OrderForm {
           },
           error: (err) => {
             console.log('Error ', err);
-            alert('Error Message: ' + err.message);
+            alert('Error Message: ' + errorMessage(err));
           },
         });
       } else {
@@ -73,7 +74,7 @@ export class OrderForm {
           },
           error: (err) => {
             console.log('Error ', err);
-            alert('Error Message: ' + err.message);
+            alert('Error Message: ' + errorMessage(err));
           },
         });
       }

@@ -10,6 +10,7 @@ export interface RegisterReq {
 
 export interface AuthResponse {
   token: string;
+  refreshToken: string;
   username: string;
   role: string;
   expiresAtUtc: string;

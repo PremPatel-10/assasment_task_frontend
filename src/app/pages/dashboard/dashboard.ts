@@ -1,10 +1,13 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin, merge } from 'rxjs';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
 import { ItemService } from '../../services/item-service';
 import { OrderService } from '../../services/order-service';
 import { Item } from '../../Models/item';
 import { Order } from '../../Models/Order';
+import { SignalrService } from '../../services/signalr-service';
+import { errorMessage } from '../../utils/http-error';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,18 +30,34 @@ export class Dashboard implements AfterViewInit {
   private trendChart?: Chart;
   private itemStatusChart?: Chart;
 
+  private viewReady = false;
+
   constructor(
     private itemService: ItemService,
     private orderService: OrderService,
-  ) {}
+    private signalrService: SignalrService,
+  ) {
+    // Live refresh whenever another client changes items or orders. takeUntilDestroyed() needs
+    // an injection context, so this has to be wired up here rather than in ngAfterViewInit().
+    merge(this.signalrService.itemsChanged$, this.signalrService.ordersChanged$)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadAndRender());
+  }
 
   ngAfterViewInit() {
+    this.viewReady = true;
+    this.loadAndRender();
+  }
+
+  private loadAndRender() {
+    if (!this.viewReady) return;
+
     forkJoin({
       items: this.itemService.getAllItem(),
       orders: this.orderService.getAllOrder(),
     }).subscribe({
       next: ({ items, orders }) => this.render(items, orders),
-      error: (err) => console.log('Error loading dashboard: ' + err.message),
+      error: (err) => console.log('Error loading dashboard: ' + errorMessage(err)),
     });
   }
 

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
+import { errorMessage } from '../../../utils/http-error';
 
 @Component({
   selector: 'app-login',
@@ -35,7 +36,7 @@ export class Login {
             this.router.navigateByUrl(returnUrl);
           },
           error: (err) => {
-            alert('Login failed: ' + err.message);
+            alert('Login failed: ' + errorMessage(err));
           },
         });
     } else {

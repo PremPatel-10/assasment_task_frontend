@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrderService } from '../../services/order-service';
 import { Router } from '@angular/router';
 import { Order } from '../../Models/Order';
@@ -6,6 +7,8 @@ import { OrderDetailsService } from '../../services/order-details-service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { ExportService } from '../../services/export-service';
+import { SignalrService } from '../../services/signalr-service';
+import { errorMessage } from '../../utils/http-error';
 
 @Component({
   selector: 'app-order-list',
@@ -23,7 +26,11 @@ export class OrderList {
     private orderDetailsService: OrderDetailsService,
     public authService: AuthService,
     private exportService: ExportService,
-  ) {}
+    private signalrService: SignalrService,
+  ) {
+    // Live refresh whenever another client adds/edits/deletes an order.
+    this.signalrService.ordersChanged$.pipe(takeUntilDestroyed()).subscribe(() => this.loadPage());
+  }
 
   ngOnInit() {
     this.loadPage();
@@ -48,7 +55,7 @@ export class OrderList {
           this.pageData.update((o) => o?.filter((o) => o.orderId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + err.message);
+          alert("Data doesn't Deleted with Error: " + errorMessage(err));
         },
       });
     } else {
@@ -104,7 +111,7 @@ export class OrderList {
         this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
       },
       error: (err) => {
-        console.log('Error: ' + err.message);
+        console.log('Error: ' + errorMessage(err));
       },
     });
   }
@@ -152,5 +159,22 @@ export class OrderList {
 
   exportPdf() {
     this.exportService.exportToPdf('orders', 'Order Report', this.exportColumns, this.pageData());
+  }
+
+  /*---------------------------------------------------------------------------------------------------*/
+  // Per-order detail reports (order + line items), generated server-side.
+
+  downloadOrderExcel(id: number) {
+    this.orderService.exportOrderExcel(id).subscribe({
+      next: (blob) => this.exportService.downloadBlob(blob, `order-${id}.xlsx`),
+      error: (err) => alert('Export failed: ' + errorMessage(err)),
+    });
+  }
+
+  downloadOrderPdf(id: number) {
+    this.orderService.exportOrderPdf(id).subscribe({
+      next: (blob) => this.exportService.downloadBlob(blob, `order-${id}.pdf`),
+      error: (err) => alert('Export failed: ' + errorMessage(err)),
+    });
   }
 }

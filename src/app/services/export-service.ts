@@ -47,7 +47,8 @@ export class ExportService {
     return /[",\r\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
   }
 
-  private downloadBlob(blob: Blob, filename: string) {
+  /** Triggers a browser download for an already-built blob (e.g. a server-generated file). */
+  downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;

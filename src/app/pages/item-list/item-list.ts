@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ItemService } from '../../services/item-service';
 import { Item, ItemReq } from '../../Models/item';
 import { Router } from '@angular/router';
@@ -6,6 +7,8 @@ import { InputPopup } from './input-popup/input-popup';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { ExportService } from '../../services/export-service';
+import { SignalrService } from '../../services/signalr-service';
+import { errorMessage } from '../../utils/http-error';
 
 @Component({
   selector: 'app-item-list',
@@ -22,7 +25,11 @@ export class ItemList {
     private router: Router,
     public authService: AuthService,
     private exportService: ExportService,
-  ) {}
+    private signalrService: SignalrService,
+  ) {
+    // Live refresh whenever another client adds/edits/deletes an item.
+    this.signalrService.itemsChanged$.pipe(takeUntilDestroyed()).subscribe(() => this.loadPage());
+  }
 
   ngOnInit() {
     this.loadPage();
@@ -39,8 +46,7 @@ export class ItemList {
           this.pageData.update((i) => [...i, data]);
         },
         error: (err) => {
-          alert('Error: ' + err.message);
-          console.log('err: ' + err.message);
+          alert('Error: ' + errorMessage(err));
         },
       });
     }
@@ -59,7 +65,7 @@ export class ItemList {
           this.pageData.update((i) => i?.filter((u) => u.itemId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + err.message);
+          alert("Data doesn't Deleted with Error: " + errorMessage(err));
         },
       });
     } else {
@@ -115,7 +121,7 @@ export class ItemList {
         this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
       },
       error: (err) => {
-        console.log('Error: ' + err.message);
+        console.log('Error: ' + errorMessage(err));
       },
     });
   }

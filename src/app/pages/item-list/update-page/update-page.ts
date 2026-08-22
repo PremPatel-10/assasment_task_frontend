@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item-service';
 import { ItemReq } from '../../../Models/item';
+import { errorMessage } from '../../../utils/http-error';
 
 @Component({
   selector: 'app-update-page',
@@ -55,7 +56,7 @@ export class UpdatePage {
         },
         error: (err) => {
           console.log('Error ', err);
-          alert('Error Message: ' + err.message);
+          alert('Error Message: ' + errorMessage(err));
         },
       });
     } else {

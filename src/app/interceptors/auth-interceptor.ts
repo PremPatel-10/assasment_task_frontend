@@ -6,7 +6,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.token;
 
-  const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+  const headers: Record<string, string> = { 'X-Api-Version': '1.0' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
 
-  return next(authReq);
+  return next(req.clone({ setHeaders: headers }));
 };
