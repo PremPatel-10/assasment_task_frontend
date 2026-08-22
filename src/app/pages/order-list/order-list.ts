@@ -5,6 +5,7 @@ import { Order } from '../../Models/Order';
 import { OrderDetailsService } from '../../services/order-details-service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
+import { ExportService } from '../../services/export-service';
 
 @Component({
   selector: 'app-order-list',
@@ -21,6 +22,7 @@ export class OrderList {
     private router: Router,
     private orderDetailsService: OrderDetailsService,
     public authService: AuthService,
+    private exportService: ExportService,
   ) {}
 
   ngOnInit() {
@@ -132,5 +134,23 @@ export class OrderList {
         this.router.navigate(['orderlist/orderdetails/add-details', id]);
       },
     });
+  }
+
+  /*---------------------------------------------------------------------------------------------------*/
+
+  private readonly exportColumns = [
+    { header: 'Order Id', key: 'orderId' },
+    { header: 'Order Number', key: 'orderNumber' },
+    { header: 'Vendor Name', key: 'vendorName' },
+    { header: 'Order Date', key: 'orderDate' },
+    { header: 'Order Total', key: 'orderTotal' },
+  ];
+
+  exportCsv() {
+    this.exportService.exportToCsv('orders', this.exportColumns, this.pageData());
+  }
+
+  exportPdf() {
+    this.exportService.exportToPdf('orders', 'Order Report', this.exportColumns, this.pageData());
   }
 }

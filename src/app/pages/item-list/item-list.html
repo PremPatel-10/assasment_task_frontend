@@ -5,6 +5,12 @@
   @if (authService.isAdmin()) {
     <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
   }
+  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportCsv()">
+    Export CSV
+  </button>
+  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportPdf()">
+    Export PDF
+  </button>
 </div>
 @if (isPopupOpen()) {
   <app-input-popup

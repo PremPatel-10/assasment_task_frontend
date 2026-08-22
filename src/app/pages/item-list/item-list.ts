@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { InputPopup } from './input-popup/input-popup';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
+import { ExportService } from '../../services/export-service';
 
 @Component({
   selector: 'app-item-list',
@@ -20,6 +21,7 @@ export class ItemList {
     private itemService: ItemService,
     private router: Router,
     public authService: AuthService,
+    private exportService: ExportService,
   ) {}
 
   ngOnInit() {
@@ -130,5 +132,21 @@ export class ItemList {
       this.pageNumber--;
       this.loadPage();
     }
+  }
+
+  /*---------------------------------------------------------------------------------------------------*/
+
+  private readonly exportColumns = [
+    { header: 'Item Id', key: 'itemId' },
+    { header: 'Item Name', key: 'itemName' },
+    { header: 'Item Code', key: 'itemCode' },
+  ];
+
+  exportCsv() {
+    this.exportService.exportToCsv('items', this.exportColumns, this.pageData());
+  }
+
+  exportPdf() {
+    this.exportService.exportToPdf('items', 'Item Report', this.exportColumns, this.pageData());
   }
 }

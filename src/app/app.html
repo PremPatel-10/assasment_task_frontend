@@ -3,6 +3,7 @@
   <div class="navigation">
     @if (authService.isLoggedIn()) {
       <a routerLink="/">Home</a>
+      <a routerLink="/dashboard">Dashboard</a>
       <a routerLink="/itemlist">Item List</a>
       <a routerLink="/orderlist">Order List</a>
       <span class="ms-3">{{ authService.username() }} ({{ authService.role() }})</span>
