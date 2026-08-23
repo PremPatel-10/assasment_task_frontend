@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrderService } from '../../services/order-service';
 import { Router } from '@angular/router';
@@ -8,12 +9,26 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { ExportService } from '../../services/export-service';
 import { SignalrService } from '../../services/signalr-service';
+import { NotificationService } from '../../services/notification-service';
 import { errorMessage } from '../../utils/http-error';
+import { TableModule, TableLazyLoadEvent } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+    DecimalPipe,
+  ],
   templateUrl: './order-list.html',
   styleUrl: './order-list.css',
 })
@@ -27,13 +42,10 @@ export class OrderList {
     public authService: AuthService,
     private exportService: ExportService,
     private signalrService: SignalrService,
+    private notify: NotificationService,
   ) {
     // Live refresh whenever another client adds/edits/deletes an order.
     this.signalrService.ordersChanged$.pipe(takeUntilDestroyed()).subscribe(() => this.loadPage());
-  }
-
-  ngOnInit() {
-    this.loadPage();
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -44,24 +56,18 @@ export class OrderList {
 
   /*---------------------------------------------------------------------------------------------------*/
 
-  confirmdata: boolean = false;
   onDelete(id: number) {
-    this.confirmdata = confirm('Are you sure for Deleting Order');
-
-    if (this.confirmdata.valueOf()) {
+    this.notify.confirm('Are you sure you want to delete this order?', () => {
       this.orderService.deleteOrder(id).subscribe({
         next: () => {
-          alert('Data Deleted Successfully');
+          this.notify.success('Order deleted successfully');
           this.pageData.update((o) => o?.filter((o) => o.orderId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + errorMessage(err));
+          this.notify.error("Couldn't delete order: " + errorMessage(err));
         },
       });
-    } else {
-      alert('Data Deletion Canceled');
-      this.router.navigate(['/orderlist']);
-    }
+    });
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -72,7 +78,6 @@ export class OrderList {
 
   /*---------------------------------------------------------------------------------------------------*/
 
-  searchedOrderD = signal<Order[] | undefined>(undefined);
   searchTerm = new FormControl('');
   onSearch() {
     const value = this.searchTerm.value?.trim();
@@ -83,14 +88,14 @@ export class OrderList {
         if (data.length >= 1) {
           this.pageData.set(data);
         } else {
-          alert('Order Record not Found');
+          this.notify.info('Order not found');
           this.loadPage();
         }
         this.searchTerm.reset('');
       },
       error: (err) => {
         console.error(err);
-        alert('Search failed due to a server error');
+        this.notify.error('Search failed due to a server error');
         this.loadPage();
       },
     });
@@ -101,33 +106,28 @@ export class OrderList {
   pageData = signal<Order[]>([]);
   pageSize: number = 5;
   pageNumber: number = 1;
-  finalPage: number = 0;
+  loading = signal<boolean>(true);
 
   loadPage() {
+    this.loading.set(true);
     this.orderService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (result) => {
         this.pageData.set(result.items);
         this.totalOrderCount = result.totalCount;
-        this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
+        this.loading.set(false);
       },
       error: (err) => {
         console.log('Error: ' + errorMessage(err));
+        this.loading.set(false);
       },
     });
   }
 
-  nextPage() {
-    if (this.pageNumber < this.finalPage) {
-      this.pageNumber++;
-      this.loadPage();
-    }
-  }
-
-  previousPage() {
-    if (this.pageNumber > 1) {
-      this.pageNumber--;
-      this.loadPage();
-    }
+  onLazyLoad(event: TableLazyLoadEvent) {
+    const rows = event.rows ?? this.pageSize;
+    this.pageSize = rows;
+    this.pageNumber = Math.floor((event.first ?? 0) / rows) + 1;
+    this.loadPage();
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -167,14 +167,14 @@ export class OrderList {
   downloadOrderExcel(id: number) {
     this.orderService.exportOrderExcel(id).subscribe({
       next: (blob) => this.exportService.downloadBlob(blob, `order-${id}.xlsx`),
-      error: (err) => alert('Export failed: ' + errorMessage(err)),
+      error: (err) => this.notify.error('Export failed: ' + errorMessage(err)),
     });
   }
 
   downloadOrderPdf(id: number) {
     this.orderService.exportOrderPdf(id).subscribe({
       next: (blob) => this.exportService.downloadBlob(blob, `order-${id}.pdf`),
-      error: (err) => alert('Export failed: ' + errorMessage(err)),
+      error: (err) => this.notify.error('Export failed: ' + errorMessage(err)),
     });
   }
 }

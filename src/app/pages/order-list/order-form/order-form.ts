@@ -4,10 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/order-service';
 import { OrderReq } from '../../../Models/Order';
 import { errorMessage } from '../../../utils/http-error';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
+import { NotificationService } from '../../../services/notification-service';
+
 @Component({
   selector: 'app-order-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CardModule, InputTextModule, InputNumberModule, ButtonModule],
   templateUrl: './order-form.html',
   styleUrl: './order-form.css',
 })
@@ -26,6 +32,7 @@ export class OrderForm {
     private orderService: OrderService,
     private route: ActivatedRoute,
     private router: Router,
+    private notify: NotificationService,
   ) {}
 
   id: number = 0;
@@ -40,7 +47,7 @@ export class OrderForm {
             this.computedOrderTotal = data.orderTotal;
           },
           error: (err) => {
-            console.log('Error: ', err);
+            this.notify.error(errorMessage(err));
           },
         });
       }
@@ -58,28 +65,26 @@ export class OrderForm {
       if (this.id) {
         this.orderService.updateOrder(this.id, orderUpdateData).subscribe({
           next: () => {
-            alert('Data Updated');
+            this.notify.success('Order updated successfully');
             this.router.navigate(['/orderlist']);
           },
           error: (err) => {
-            console.log('Error ', err);
-            alert('Error Message: ' + errorMessage(err));
+            this.notify.error(errorMessage(err));
           },
         });
       } else {
         this.orderService.insertOrder(orderUpdateData).subscribe({
           next: () => {
-            alert('Data Added');
+            this.notify.success('Order added successfully');
             this.router.navigate(['/orderlist']);
           },
           error: (err) => {
-            console.log('Error ', err);
-            alert('Error Message: ' + errorMessage(err));
+            this.notify.error(errorMessage(err));
           },
         });
       }
     } else {
-      alert('Please Provide Necessory Information');
+      this.notify.error('Please provide all required information');
     }
   }
 

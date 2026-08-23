@@ -1,11 +1,16 @@
 import { Component, input, output } from '@angular/core';
 import { ItemReq } from '../../../Models/item';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
+import { NotificationService } from '../../../services/notification-service';
 
 @Component({
   selector: 'app-input-popup',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DialogModule, InputTextModule, InputNumberModule, ButtonModule],
   templateUrl: './input-popup.html',
   styleUrl: './input-popup.css',
 })
@@ -15,35 +20,29 @@ export class InputPopup {
 
   itemData = output<ItemReq>();
 
+  constructor(private notify: NotificationService) {}
+
   itemForm = new FormGroup({
     itemNameForm: new FormControl('', [Validators.required]),
-    itemCodeForm: new FormControl(0, [Validators.required]),
+    itemCodeForm: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
   });
 
-  onSubmit() {
-    let inpData: ItemReq | undefined = undefined;
+  onVisibleChange(visible: boolean) {
+    if (!visible) {
+      this.isClose.emit();
+    }
+  }
 
-    if (
-      this.itemForm.value.itemNameForm?.trim() === '' ||
-      Number(this.itemForm.value.itemCodeForm) === 0
-    ) {
-      alert('You cannot submit with Empty fields');
+  onSubmit() {
+    if (this.itemForm.invalid || !this.itemForm.value.itemNameForm?.trim()) {
+      this.notify.error('Please fill in both fields before submitting');
       return;
     }
-    if (this.itemForm.valid) {
-      const inpItemName = this.itemForm.value.itemNameForm;
-      const inpItemCode = Number(this.itemForm.value.itemCodeForm);
 
-      if (this.itemForm.valid) {
-        inpData = {
-          itemName: inpItemName!,
-          itemCode: inpItemCode!,
-        };
-        console.log(inpData);
-        this.itemData.emit(inpData);
-      } else {
-        alert('Do not keep your fields empty');
-      }
-    }
+    const inpData: ItemReq = {
+      itemName: this.itemForm.value.itemNameForm!,
+      itemCode: Number(this.itemForm.value.itemCodeForm),
+    };
+    this.itemData.emit(inpData);
   }
 }

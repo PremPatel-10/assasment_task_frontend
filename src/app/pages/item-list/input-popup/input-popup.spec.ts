@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { InputPopup } from './input-popup';
 
@@ -9,6 +10,7 @@ describe('InputPopup', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [InputPopup],
+      providers: [MessageService, ConfirmationService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputPopup);

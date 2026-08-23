@@ -1,51 +1,43 @@
-<form [formGroup]="orderForm">
-  <div class="mb-3">
-    <label for="orderNumber" class="form-label">Enter Order Number</label>
-    <input
-      type="number"
-      class="form-control"
-      id="orderNumber"
-      placeholder="Order Number"
-      formControlName="orderNumber"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="vendorName" class="form-label">Enter Vendor Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="vendorName"
-      placeholder="Vendor Name"
-      formControlName="vendorName"
-      required
-    />
-  </div>
-  <div class="mb-3">
-    <label for="orderDate" class="form-label">Enter Order Date</label>
-    <input
-      type="date"
-      class="form-control"
-      id="orderDate"
-      placeholder="yyyy-mm-dd"
-      formControlName="orderDate"
-      required
-    />
-  </div>
-  @if (computedOrderTotal !== null) {
-    <div class="mb-3">
-      <label for="orderTotal" class="form-label">Order Total (computed from line items)</label>
-      <input
-        type="number"
-        class="form-control"
-        id="orderTotal"
-        [value]="computedOrderTotal"
-        readonly
-      />
-    </div>
-  }
-  <div class="submitBtn">
-    <button type="button" class="btn btn-primary me-3" (click)="backToHomepage()">Back</button>
-    <button type="reset" class="btn btn-secondary me-3">Reset</button>
-    <button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
-  </div>
-</form>
+<div class="page narrow">
+  <h1 class="page-title">{{ id ? 'Update Order' : 'Add Order' }}</h1>
+
+  <p-card>
+    <form [formGroup]="orderForm" class="form-body">
+      <div class="field">
+        <label for="orderNumber">Order Number</label>
+        <p-inputnumber
+          inputId="orderNumber"
+          formControlName="orderNumber"
+          placeholder="Order Number"
+          [useGrouping]="false"
+          styleClass="w-full"
+        ></p-inputnumber>
+      </div>
+      <div class="field">
+        <label for="vendorName">Vendor Name</label>
+        <input pInputText id="vendorName" placeholder="Vendor Name" formControlName="vendorName" />
+      </div>
+      <div class="field">
+        <label for="orderDate">Order Date</label>
+        <input pInputText type="date" id="orderDate" formControlName="orderDate" />
+      </div>
+      @if (computedOrderTotal !== null) {
+        <div class="field">
+          <label for="orderTotal">Order Total (computed from line items)</label>
+          <input pInputText id="orderTotal" [value]="computedOrderTotal" readonly />
+        </div>
+      }
+
+      <div class="form-actions">
+        <p-button
+          label="Back"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="backToHomepage()"
+        ></p-button>
+        <p-button label="Submit" icon="pi pi-check" (onClick)="onSubmit()"></p-button>
+      </div>
+    </form>
+  </p-card>
+</div>

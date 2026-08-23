@@ -8,12 +8,26 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { ExportService } from '../../services/export-service';
 import { SignalrService } from '../../services/signalr-service';
+import { NotificationService } from '../../services/notification-service';
 import { errorMessage } from '../../utils/http-error';
+import { TableModule, TableLazyLoadEvent } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-item-list',
   standalone: true,
-  imports: [InputPopup, ReactiveFormsModule],
+  imports: [
+    InputPopup,
+    ReactiveFormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+  ],
   templateUrl: './item-list.html',
   styleUrl: './item-list.css',
 })
@@ -26,13 +40,10 @@ export class ItemList {
     public authService: AuthService,
     private exportService: ExportService,
     private signalrService: SignalrService,
+    private notify: NotificationService,
   ) {
     // Live refresh whenever another client adds/edits/deletes an item.
     this.signalrService.itemsChanged$.pipe(takeUntilDestroyed()).subscribe(() => this.loadPage());
-  }
-
-  ngOnInit() {
-    this.loadPage();
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -42,11 +53,12 @@ export class ItemList {
     if (inpData) {
       this.itemService.insertItem(inpData).subscribe({
         next: (data) => {
-          alert('Item Added Successfully');
+          this.notify.success('Item added successfully');
+          this.isPopupOpen.set(false);
           this.pageData.update((i) => [...i, data]);
         },
         error: (err) => {
-          alert('Error: ' + errorMessage(err));
+          this.notify.error(errorMessage(err));
         },
       });
     }
@@ -54,24 +66,18 @@ export class ItemList {
 
   /*---------------------------------------------------------------------------------------------------*/
 
-  confirmdata: boolean = false;
   onDelete(id: number) {
-    this.confirmdata = confirm('Are you sure for Deleting Item');
-
-    if (this.confirmdata.valueOf()) {
+    this.notify.confirm('Are you sure you want to delete this item?', () => {
       this.itemService.deleteItem(id).subscribe({
         next: () => {
-          alert('Data Deleted Successfully');
+          this.notify.success('Item deleted successfully');
           this.pageData.update((i) => i?.filter((u) => u.itemId !== id));
         },
         error: (err) => {
-          alert("Data doesn't Deleted with Error: " + errorMessage(err));
+          this.notify.error("Couldn't delete item: " + errorMessage(err));
         },
       });
-    } else {
-      alert('Data Deletion Canceled');
-      this.router.navigate(['/']);
-    }
+    });
   }
 
   /*---------------------------------------------------------------------------------------------------*/
@@ -82,7 +88,6 @@ export class ItemList {
 
   /*---------------------------------------------------------------------------------------------------*/
 
-  searchedItemD = signal<Item[] | undefined>(undefined);
   searchTerm = new FormControl('');
   onSearch() {
     const value = this.searchTerm.value?.trim();
@@ -93,14 +98,14 @@ export class ItemList {
         if (data.length >= 1) {
           this.pageData.set(data);
         } else {
-          alert('Item not Found');
+          this.notify.info('Item not found');
           this.loadPage();
         }
         this.searchTerm.reset('');
       },
       error: (err) => {
         console.error(err);
-        alert('Search failed due to a server error');
+        this.notify.error('Search failed due to a server error');
         this.loadPage();
       },
     });
@@ -111,33 +116,28 @@ export class ItemList {
   pageData = signal<Item[]>([]);
   pageSize: number = 5;
   pageNumber: number = 1;
-  finalPage: number = 0;
+  loading = signal<boolean>(true);
 
   loadPage() {
+    this.loading.set(true);
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (result) => {
         this.pageData.set(result.items);
         this.totalItemCount = result.totalCount;
-        this.finalPage = Math.max(1, Math.ceil(result.totalCount / this.pageSize));
+        this.loading.set(false);
       },
       error: (err) => {
         console.log('Error: ' + errorMessage(err));
+        this.loading.set(false);
       },
     });
   }
 
-  nextPage() {
-    if (this.pageNumber < this.finalPage) {
-      this.pageNumber++;
-      this.loadPage();
-    }
-  }
-
-  previousPage() {
-    if (this.pageNumber > 1) {
-      this.pageNumber--;
-      this.loadPage();
-    }
+  onLazyLoad(event: TableLazyLoadEvent) {
+    const rows = event.rows ?? this.pageSize;
+    this.pageSize = rows;
+    this.pageNumber = Math.floor((event.first ?? 0) / rows) + 1;
+    this.loadPage();
   }
 
   /*---------------------------------------------------------------------------------------------------*/

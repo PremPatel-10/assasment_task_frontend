@@ -1,42 +1,39 @@
-<dialog [open]="isOpen()">
-  <div class="dialog-content">
-    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
-      <div class="dialog-header">
-        <h2>Enter Item Information</h2>
-      </div>
-      <div class="dialog-body mt-3 mb-3">
-        <table cellPadding="4" id="modelTable">
-          <tr>
-            <th>Item Name</th>
-            <td>
-              <input
-                type="text"
-                id="inpItemName"
-                placeholder="Enter Item Name"
-                formControlName="itemNameForm"
-                required
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>Item Code</th>
-            <td>
-              <input
-                type="number"
-                id="inpItemCode"
-                placeholder="Enter Item Code"
-                formControlName="itemCodeForm"
-                required
-              />
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="dialog-footer">
-        <button type="button" class="btn btn-primary me-2" (click)="isClose.emit()">Close</button>
-        <button type="reset" class="btn btn-secondary me-2">Reset</button>
-        <button type="submit" class="btn btn-success">Save Changes</button>
-      </div>
-    </form>
-  </div>
-</dialog>
+<p-dialog
+  header="Add Item"
+  [visible]="isOpen()"
+  (visibleChange)="onVisibleChange($event)"
+  [modal]="true"
+  [style]="{ width: '28rem' }"
+>
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="form-body">
+    <div class="field">
+      <label for="inpItemName">Item Name</label>
+      <input
+        pInputText
+        id="inpItemName"
+        placeholder="Enter item name"
+        formControlName="itemNameForm"
+      />
+    </div>
+    <div class="field">
+      <label for="inpItemCode">Item Code</label>
+      <p-inputnumber
+        inputId="inpItemCode"
+        formControlName="itemCodeForm"
+        placeholder="Enter item code"
+        [useGrouping]="false"
+        styleClass="w-full"
+      ></p-inputnumber>
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="isClose.emit()"
+    ></p-button>
+    <p-button label="Save Item" icon="pi pi-check" (onClick)="onSubmit()"></p-button>
+  </ng-template>
+</p-dialog>

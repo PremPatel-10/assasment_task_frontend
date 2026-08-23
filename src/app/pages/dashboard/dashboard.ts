@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, merge } from 'rxjs';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
@@ -12,7 +13,7 @@ import { errorMessage } from '../../utils/http-error';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -77,7 +78,10 @@ export class Dashboard implements AfterViewInit {
   private renderVendorChart(orders: Order[]) {
     const totalsByVendor = new Map<string, number>();
     for (const o of orders) {
-      totalsByVendor.set(o.vendorName, (totalsByVendor.get(o.vendorName) || 0) + (o.orderTotal || 0));
+      totalsByVendor.set(
+        o.vendorName,
+        (totalsByVendor.get(o.vendorName) || 0) + (o.orderTotal || 0),
+      );
     }
 
     const topVendors = [...totalsByVendor.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -90,11 +94,16 @@ export class Dashboard implements AfterViewInit {
           {
             label: 'Order Total',
             data: topVendors.map(([, total]) => total),
-            backgroundColor: '#0d6efd',
+            backgroundColor: '#14213d',
+            borderRadius: 4,
           },
         ],
       },
-      options: { responsive: true, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+      },
     };
 
     this.vendorChart?.destroy();
@@ -120,14 +129,18 @@ export class Dashboard implements AfterViewInit {
           {
             label: 'Order Total',
             data: sortedDates.map(([, total]) => total),
-            borderColor: '#198754',
-            backgroundColor: 'rgba(25, 135, 84, 0.15)',
+            borderColor: '#fca311',
+            backgroundColor: 'rgba(252, 163, 17, 0.15)',
             fill: true,
             tension: 0.3,
           },
         ],
       },
-      options: { responsive: true, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+      },
     };
 
     this.trendChart?.destroy();
@@ -147,11 +160,15 @@ export class Dashboard implements AfterViewInit {
         datasets: [
           {
             data: [active, inactive],
-            backgroundColor: ['#0d6efd', '#adb5bd'],
+            backgroundColor: ['#fca311', '#d1d5db'],
           },
         ],
       },
-      options: { responsive: true },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+      },
     };
 
     this.itemStatusChart?.destroy();

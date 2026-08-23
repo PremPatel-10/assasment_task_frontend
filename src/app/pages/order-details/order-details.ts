@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OrderDetailsService } from '../../services/order-details-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,11 +8,16 @@ import { Item } from '../../Models/item';
 import { OrderService } from '../../services/order-service';
 import { ItemService } from '../../services/item-service';
 import { errorMessage } from '../../utils/http-error';
+import { NotificationService } from '../../services/notification-service';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-order-details',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TableModule, ButtonModule, InputNumberModule, SelectModule],
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',
 })
@@ -21,12 +26,24 @@ export class OrderDetails {
   allOrders = signal<Order[]>([]);
   allItems = signal<Item[]>([]);
 
+  itemOptions = computed(() =>
+    this.allItems().map((item) => ({
+      label: `${item.itemId} - ${item.itemName}`,
+      value: item.itemId,
+    })),
+  );
+
+  itemName(itemId: number): string {
+    return this.allItems().find((i) => i.itemId === itemId)?.itemName ?? `Item #${itemId}`;
+  }
+
   constructor(
     private orderDetailsService: OrderDetailsService,
     private route: ActivatedRoute,
     private orderService: OrderService,
     private itemService: ItemService,
     private router: Router,
+    private notify: NotificationService,
   ) {}
 
   detailsForm = new FormGroup({
@@ -54,7 +71,8 @@ export class OrderDetails {
           this.existingData.set(data);
         },
         error: () => {
-          alert('No Detials Exist for This Order');
+          // No existing line items yet — this is the normal "adding details for the first time"
+          // case, not a failure, so no toast here.
         },
       });
 
@@ -90,7 +108,6 @@ export class OrderDetails {
         this.allItems.set(data);
       },
     });
-    console.log(this.detailsArray);
   }
 
   //------------------------------------------------------------------------------------------------------
@@ -103,6 +120,10 @@ export class OrderDetails {
         total: new FormControl(0),
       }),
     );
+  }
+
+  removeRow(index: number) {
+    this.detailsArray.removeAt(index);
   }
 
   //--------------------------------------------------------------------------------------------------------
@@ -122,25 +143,23 @@ export class OrderDetails {
       if (this.isExist) {
         this.orderDetailsService.putBulkDetails(orderId, bulkData).subscribe({
           next: () => {
-            alert('Details Updated Successfully');
+            this.notify.success('Details updated successfully');
             this.router.navigate(['/orderlist']);
           },
 
           error: (err) => {
-            console.log(err);
-            alert('Failed : ' + errorMessage(err));
+            this.notify.error(errorMessage(err));
           },
         });
       } else {
         this.orderDetailsService.postBulkDetails(bulkData).subscribe({
           next: () => {
-            alert('Details Added Successfully');
+            this.notify.success('Details added successfully');
             this.router.navigate(['/orderlist']);
           },
 
           error: (err) => {
-            console.log(err);
-            alert('Failed : ' + errorMessage(err));
+            this.notify.error(errorMessage(err));
           },
         });
       }

@@ -1,59 +1,103 @@
-<h3>Item List</h3>
-<div class="heading">
-  <input type="text" placeholder="Serch your item" [formControl]="searchTerm" />
-  <button type="button" class="btn btn-sm add" (click)="onSearch()">Search</button>
-  @if (authService.isAdmin()) {
-    <button type="button" class="btn btn-sm add" (click)="isPopupOpen.set(true)">Add Item</button>
+<div class="page">
+  <h1 class="page-title">Item List</h1>
+
+  <div class="toolbar">
+    <p-iconfield class="search-field">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search your item"
+        [formControl]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+    </p-iconfield>
+    <p-button label="Search" icon="pi pi-search" size="small" (onClick)="onSearch()"></p-button>
+
+    <span class="spacer"></span>
+
+    @if (authService.isAdmin()) {
+      <p-button
+        label="Add Item"
+        icon="pi pi-plus"
+        size="small"
+        (onClick)="isPopupOpen.set(true)"
+      ></p-button>
+    }
+    <p-button
+      label="Export CSV"
+      icon="pi pi-file"
+      size="small"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="exportCsv()"
+    ></p-button>
+    <p-button
+      label="Export PDF"
+      icon="pi pi-file-pdf"
+      size="small"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="exportPdf()"
+    ></p-button>
+  </div>
+
+  @if (isPopupOpen()) {
+    <app-input-popup
+      [isOpen]="isPopupOpen()"
+      (isClose)="isPopupOpen.set(false)"
+      (itemData)="onInsert($event)"
+    ></app-input-popup>
   }
-  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportCsv()">
-    Export CSV
-  </button>
-  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportPdf()">
-    Export PDF
-  </button>
+
+  <p-table
+    [value]="pageData()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="totalItemCount"
+    [loading]="loading()"
+    dataKey="itemId"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template #header>
+      <tr>
+        <th>Item Id</th>
+        <th>Item Name</th>
+        <th>Item Code</th>
+        <th style="width: 8rem"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-l>
+      <tr>
+        <td>{{ l.itemId }}</td>
+        <td>{{ l.itemName }}</td>
+        <td>{{ l.itemCode }}</td>
+        <td>
+          @if (authService.isAdmin()) {
+            <p-button
+              icon="pi pi-pencil"
+              size="small"
+              severity="info"
+              [text]="true"
+              (onClick)="onUpdate(l.itemId)"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              size="small"
+              severity="danger"
+              [text]="true"
+              (onClick)="onDelete(l.itemId)"
+            ></p-button>
+          }
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4" class="empty-cell">No items found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
-@if (isPopupOpen()) {
-  <app-input-popup
-    [isOpen]="isPopupOpen()"
-    (isClose)="isPopupOpen.set(false)"
-    (itemData)="onInsert($event)"
-  ></app-input-popup>
-}
-
-<!-- /*---------------------------------------------------------------------------------------------------*/ -->
-
-<table cellPadding="8">
-  <tr>
-    <th>Item Id</th>
-    <th>Item Name</th>
-    <th>Item Code</th>
-  </tr>
-  @for (l of pageData(); track l.itemId) {
-    <tr>
-      <td>{{ l.itemId }}</td>
-      <td>{{ l.itemName }}</td>
-      <td>{{ l.itemCode }}</td>
-      <td>
-        @if (authService.isAdmin()) {
-          <button type="button" class="btn btn-danger actionBtn" (click)="onDelete(l.itemId)">
-            Delete
-          </button>
-          <button type="button" class="btn btn-info actionBtn" (click)="onUpdate(l.itemId)">
-            Update
-          </button>
-        }
-      </td>
-    </tr>
-  }
-</table>
-<ul class="pagination mt-3">
-  <li class="page-item">
-    <button class="btn btn-warning rounded-end-0" (click)="previousPage()">&laquo;</button>
-  </li>
-  <li class="page-item">
-    <a class="page-link">{{ pageNumber }}</a>
-  </li>
-  <li class="page-item">
-    <button class="btn btn-warning rounded-start-0" (click)="nextPage()">&raquo;</button>
-  </li>
-</ul>
