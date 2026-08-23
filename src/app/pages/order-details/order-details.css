@@ -1,0 +1,34 @@
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin: 0 0 0.75rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.25rem;
+}
+
+.rows-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.rows-table th {
+  text-align: left;
+  font-size: 0.8rem;
+  color: #6b7280;
+  padding: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.rows-table td {
+  padding: 0.4rem 0.5rem;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .rows-table .p-select,
+:host ::ng-deep .rows-table .p-inputnumber {
+  width: 100%;
+}

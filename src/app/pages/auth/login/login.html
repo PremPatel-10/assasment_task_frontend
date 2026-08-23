@@ -1,27 +1,35 @@
-<h3>Login</h3>
-<form [formGroup]="loginForm" class="col-md-4">
-  <div class="mb-3">
-    <label for="username" class="form-label">Username</label>
-    <input
-      type="text"
-      class="form-control"
-      id="username"
-      placeholder="Username"
-      formControlName="username"
-    />
+<p-card styleClass="auth-card">
+  <div class="auth-brand">
+    <i class="pi pi-warehouse"></i>
+    <span>Inventory</span>
   </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      placeholder="Password"
-      formControlName="password"
-    />
-  </div>
-  <div class="submitBtn">
-    <button type="submit" class="btn btn-success me-3" (click)="onSubmit()">Login</button>
-    <a routerLink="/register">Need an account? Register</a>
-  </div>
-</form>
+  <p class="auth-subtitle">Sign in to manage your inventory</p>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-body">
+    <div class="field">
+      <label for="username">Username</label>
+      <input pInputText id="username" placeholder="Username" formControlName="username" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <p-password
+        inputId="password"
+        formControlName="password"
+        placeholder="Password"
+        [feedback]="false"
+        [toggleMask]="true"
+        styleClass="w-full"
+      ></p-password>
+    </div>
+
+    <p-button
+      label="Login"
+      icon="pi pi-sign-in"
+      type="submit"
+      styleClass="w-full"
+      (onClick)="onSubmit()"
+    ></p-button>
+
+    <a routerLink="/register" class="auth-link">Need an account? Register</a>
+  </form>
+</p-card>

@@ -1,1 +1,18 @@
-<h3>Welcome to Invetory</h3>
+<div class="page">
+  <h1 class="page-title">
+    Welcome to Inventory{{ authService.username() ? ', ' + authService.username() : '' }}
+  </h1>
+  <p class="page-subtitle">Pick a section to get started.</p>
+
+  <div class="shortcut-row">
+    @for (s of shortcuts; track s.path) {
+      <a [routerLink]="s.path" class="shortcut-link">
+        <p-card styleClass="shortcut-card">
+          <i [class]="s.icon"></i>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.description }}</p>
+        </p-card>
+      </a>
+    }
+  </div>
+</div>

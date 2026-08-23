@@ -1,21 +1,57 @@
-<header>
-  <h1>Inventory</h1>
-  <div class="navigation">
-    @if (authService.isLoggedIn()) {
-      <a routerLink="/">Home</a>
-      <a routerLink="/dashboard">Dashboard</a>
-      <a routerLink="/itemlist">Item List</a>
-      <a routerLink="/orderlist">Order List</a>
-      <span class="ms-3">{{ authService.username() }} ({{ authService.role() }})</span>
-      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="onLogout()">
-        Logout
-      </button>
-    } @else {
-      <a routerLink="/login">Login</a>
-      <a routerLink="/register">Register</a>
-    }
+<p-toast position="top-right"></p-toast>
+<p-confirmdialog [style]="{ width: '28rem' }"></p-confirmdialog>
+
+@if (authService.isLoggedIn()) {
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="pi pi-warehouse"></i>
+        <span>Inventory</span>
+      </div>
+      <nav class="nav">
+        @for (link of navLinks; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+          >
+            <i [class]="link.icon"></i>
+            <span>{{ link.label }}</span>
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div></div>
+        <div class="user">
+          <div class="user-identity">
+            <span class="avatar">{{ initials() }}</span>
+            <div class="identity-text">
+              <span class="username">{{ authService.username() }}</span>
+              <span class="role-caption">{{ authService.role() }}</span>
+            </div>
+          </div>
+          <div class="user-divider"></div>
+          <p-button
+            label="Logout"
+            icon="pi pi-sign-out"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="onLogout()"
+          ></p-button>
+        </div>
+      </header>
+
+      <main class="content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
-</header>
-<div id="outlet">
-  <router-outlet></router-outlet>
-</div>
+} @else {
+  <div class="auth-shell">
+    <router-outlet></router-outlet>
+  </div>
+}

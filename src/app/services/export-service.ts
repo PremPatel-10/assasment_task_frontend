@@ -24,7 +24,12 @@ export class ExportService {
   }
 
   /** Exports rows as a .pdf table report. */
-  exportToPdf<T extends object>(filename: string, title: string, columns: ExportColumn[], rows: T[]) {
+  exportToPdf<T extends object>(
+    filename: string,
+    title: string,
+    columns: ExportColumn[],
+    rows: T[],
+  ) {
     const doc = new jsPDF();
     doc.setFontSize(14);
     doc.text(title, 14, 15);

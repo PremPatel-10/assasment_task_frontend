@@ -3,11 +3,23 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth-service';
 import { errorMessage } from '../../../utils/http-error';
+import { NotificationService } from '../../../services/notification-service';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    CardModule,
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
+  ],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -21,6 +33,7 @@ export class Login {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
+    private notify: NotificationService,
   ) {}
 
   onSubmit() {
@@ -36,11 +49,11 @@ export class Login {
             this.router.navigateByUrl(returnUrl);
           },
           error: (err) => {
-            alert('Login failed: ' + errorMessage(err));
+            this.notify.error('Login failed: ' + errorMessage(err));
           },
         });
     } else {
-      alert('Please provide username and password');
+      this.notify.error('Please provide username and password');
     }
   }
 }

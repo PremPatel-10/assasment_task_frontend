@@ -1,41 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item-service';
 import { ItemReq } from '../../../Models/item';
 import { errorMessage } from '../../../utils/http-error';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
+import { NotificationService } from '../../../services/notification-service';
 
 @Component({
   selector: 'app-update-page',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CardModule, InputTextModule, InputNumberModule, ButtonModule],
   templateUrl: './update-page.html',
   styleUrl: './update-page.css',
 })
 export class UpdatePage {
   itemForm = new FormGroup({
     itemName: new FormControl('', [Validators.required]),
-    itemCode: new FormControl(0, [Validators.required]),
+    itemCode: new FormControl<number | null>(null, [Validators.required]),
   });
 
   constructor(
     private itemService: ItemService,
     private route: ActivatedRoute,
     private router: Router,
+    private notify: NotificationService,
   ) {}
 
-  id: number = 0;
+  // Not currently read in the template, so this wasn't a live rendering bug — but every other
+  // route-param id in this app is a signal for the same reason (this app is zoneless; see
+  // dashboard.ts), so this is fixed proactively rather than left as a landmine for whoever adds
+  // an {{ id }} to this template next.
+  id = signal(0);
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      this.id = Number(params.get('id'));
+      const id = Number(params.get('id'));
+      this.id.set(id);
 
-      if (this.id) {
-        this.itemService.getItemById(this.id).subscribe({
+      if (id) {
+        this.itemService.getItemById(id).subscribe({
           next: (data) => {
             this.itemForm.patchValue(data);
           },
           error: (err) => {
-            console.log('Error: ', err);
+            this.notify.error(errorMessage(err));
           },
         });
       }
@@ -46,21 +57,20 @@ export class UpdatePage {
     if (this.itemForm.valid) {
       const itemUpdateData: ItemReq = {
         itemName: this.itemForm.value.itemName!,
-        itemCode: this.itemForm.value.itemCode!,
+        itemCode: Number(this.itemForm.value.itemCode),
       };
 
-      this.itemService.updateItem(this.id, itemUpdateData).subscribe({
+      this.itemService.updateItem(this.id(), itemUpdateData).subscribe({
         next: () => {
-          alert('Data Updated');
+          this.notify.success('Item updated successfully');
           this.router.navigate(['/itemlist']);
         },
         error: (err) => {
-          console.log('Error ', err);
-          alert('Error Message: ' + errorMessage(err));
+          this.notify.error(errorMessage(err));
         },
       });
     } else {
-      alert('fill Information before Submit');
+      this.notify.error('Please fill in all fields before submitting');
     }
   }
 

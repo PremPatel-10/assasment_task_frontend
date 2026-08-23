@@ -1,38 +1,134 @@
 .stat-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1rem 0 2rem;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .stat-tile {
-  flex: 1 1 160px;
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  text-align: center;
-  background-color: #f8f9fa;
+  position: relative;
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.stat-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.stat-tile:has(.stat-icon.items)::before {
+  background: #4f46e5;
+}
+
+.stat-tile:has(.stat-icon.active)::before {
+  background: #059669;
+}
+
+.stat-tile:has(.stat-icon.orders)::before {
+  background: var(--brand-orange);
+}
+
+.stat-tile:has(.stat-icon.value)::before {
+  background: #2563eb;
+}
+
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.stat-icon.items {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.stat-icon.active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.stat-icon.orders {
+  background: #fff7ed;
+  color: var(--brand-orange);
+}
+
+.stat-icon.value {
+  background: #eff6ff;
+  color: #2563eb;
 }
 
 .stat-value {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #14213d;
+  color: var(--brand-navy);
+  line-height: 1.2;
 }
 
 .stat-label {
-  color: #6c757d;
+  color: #6b7280;
+  font-size: 0.85rem;
 }
 
 .chart-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .chart-card {
   flex: 1 1 320px;
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-card.wide {
+  flex: 2 1 420px;
+}
+
+.chart-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+}
+
+/* Chart.js needs an explicitly-sized, position:relative ancestor to size its canvas against —
+   without this the "responsive" canvas has no bound and can render arbitrarily large (this was
+   the cause of the oversized/broken doughnut chart). */
+.chart-frame {
+  position: relative;
+  height: 260px;
+}
+
+.chart-frame.small {
+  height: 220px;
 }

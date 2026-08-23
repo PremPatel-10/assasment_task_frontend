@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, merge } from 'rxjs';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
@@ -8,11 +9,12 @@ import { Item } from '../../Models/item';
 import { Order } from '../../Models/Order';
 import { SignalrService } from '../../services/signalr-service';
 import { errorMessage } from '../../utils/http-error';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -21,10 +23,14 @@ export class Dashboard implements AfterViewInit {
   @ViewChild('trendCanvas') trendCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('itemStatusCanvas') itemStatusCanvas!: ElementRef<HTMLCanvasElement>;
 
-  totalItems = 0;
-  activeItems = 0;
-  totalOrders = 0;
-  totalOrderValue = 0;
+  // Signals, not plain properties — this app runs zoneless (no zone.js), so a plain property set
+  // inside an RxJS subscribe() callback never triggers a re-render. Only a signal write does.
+  // (The charts next to these don't have this problem: Chart.js draws straight to the canvas,
+  // bypassing Angular's template/change-detection system entirely.)
+  totalItems = signal(0);
+  activeItems = signal(0);
+  totalOrders = signal(0);
+  totalOrderValue = signal(0);
 
   private vendorChart?: Chart;
   private trendChart?: Chart;
@@ -36,6 +42,7 @@ export class Dashboard implements AfterViewInit {
     private itemService: ItemService,
     private orderService: OrderService,
     private signalrService: SignalrService,
+    private notify: NotificationService,
   ) {
     // Live refresh whenever another client changes items or orders. takeUntilDestroyed() needs
     // an injection context, so this has to be wired up here rather than in ngAfterViewInit().
@@ -57,15 +64,15 @@ export class Dashboard implements AfterViewInit {
       orders: this.orderService.getAllOrder(),
     }).subscribe({
       next: ({ items, orders }) => this.render(items, orders),
-      error: (err) => console.log('Error loading dashboard: ' + errorMessage(err)),
+      error: (err) => this.notify.error('Failed to load dashboard data: ' + errorMessage(err)),
     });
   }
 
   private render(items: Item[], orders: Order[]) {
-    this.totalItems = items.length;
-    this.activeItems = items.filter((i) => i.isActive).length;
-    this.totalOrders = orders.length;
-    this.totalOrderValue = orders.reduce((sum, o) => sum + (o.orderTotal || 0), 0);
+    this.totalItems.set(items.length);
+    this.activeItems.set(items.filter((i) => i.isActive).length);
+    this.totalOrders.set(orders.length);
+    this.totalOrderValue.set(orders.reduce((sum, o) => sum + (o.orderTotal || 0), 0));
 
     this.renderVendorChart(orders);
     this.renderTrendChart(orders);
@@ -77,7 +84,10 @@ export class Dashboard implements AfterViewInit {
   private renderVendorChart(orders: Order[]) {
     const totalsByVendor = new Map<string, number>();
     for (const o of orders) {
-      totalsByVendor.set(o.vendorName, (totalsByVendor.get(o.vendorName) || 0) + (o.orderTotal || 0));
+      totalsByVendor.set(
+        o.vendorName,
+        (totalsByVendor.get(o.vendorName) || 0) + (o.orderTotal || 0),
+      );
     }
 
     const topVendors = [...totalsByVendor.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -90,11 +100,16 @@ export class Dashboard implements AfterViewInit {
           {
             label: 'Order Total',
             data: topVendors.map(([, total]) => total),
-            backgroundColor: '#0d6efd',
+            backgroundColor: '#14213d',
+            borderRadius: 4,
           },
         ],
       },
-      options: { responsive: true, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+      },
     };
 
     this.vendorChart?.destroy();
@@ -120,14 +135,18 @@ export class Dashboard implements AfterViewInit {
           {
             label: 'Order Total',
             data: sortedDates.map(([, total]) => total),
-            borderColor: '#198754',
-            backgroundColor: 'rgba(25, 135, 84, 0.15)',
+            borderColor: '#fca311',
+            backgroundColor: 'rgba(252, 163, 17, 0.15)',
             fill: true,
             tension: 0.3,
           },
         ],
       },
-      options: { responsive: true, plugins: { legend: { display: false } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+      },
     };
 
     this.trendChart?.destroy();
@@ -147,11 +166,15 @@ export class Dashboard implements AfterViewInit {
         datasets: [
           {
             data: [active, inactive],
-            backgroundColor: ['#0d6efd', '#adb5bd'],
+            backgroundColor: ['#fca311', '#d1d5db'],
           },
         ],
       },
-      options: { responsive: true },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+      },
     };
 
     this.itemStatusChart?.destroy();

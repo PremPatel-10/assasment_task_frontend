@@ -1,83 +1,108 @@
-<form [formGroup]="detailsForm">
-  <div class="mb-3">
-    <label for="orderId" class="form-label">Order Id</label>
-    <input id="orderId" type="number" class="form-control" formControlName="orderId" readonly />
-  </div>
+<div class="page">
+  <h1 class="page-title">Order Details — Order #{{ id() }}</h1>
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Total</th>
-      </tr>
-    </thead>
+  <form [formGroup]="detailsForm">
+    @if (existingData().length > 0) {
+      <h3 class="section-title">Existing Line Items</h3>
+      <p-table [value]="existingData()" dataKey="orderDetailId" styleClass="p-datatable-sm mb-4">
+        <ng-template #header>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-e>
+          <tr>
+            <td>{{ e.itemId }} - {{ itemName(e.itemId) }}</td>
+            <td>{{ e.price }}</td>
+            <td>{{ e.quantity }}</td>
+            <td>{{ e.total }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
 
-    <tbody formArrayName="details">
-      @for (e of existingData(); track e.orderDetailId) {
+    <h3 class="section-title">{{ isExist() ? 'Update Line Items' : 'Add Line Items' }}</h3>
+
+    <table class="rows-table" formArrayName="details">
+      <thead>
         <tr>
-          <!-- <td>{{ e.itemId }}</td> -->
-          @for (item of allItems(); track item.itemId) {
-            @if (e.itemId == item.itemId) {
-              <td>{{ item.itemId }} - {{ item.itemName }}</td>
-            }
-          }
-          <td>{{ e.price }}</td>
-          <td>{{ e.quantity }}</td>
-          <td>{{ e.total }}</td>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th></th>
         </tr>
-      }
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      @for (row of detailsArray.controls; track $index) {
-        <tr [formGroupName]="$index">
-          <td>
-            <select class="form-select" formControlName="itemId">
-              <option value="">Select Item</option>
+      </thead>
+      <tbody>
+        @for (row of detailsArray.controls; track $index) {
+          <tr [formGroupName]="$index">
+            <td>
+              <p-select
+                [options]="itemOptions()"
+                optionLabel="label"
+                optionValue="value"
+                formControlName="itemId"
+                placeholder="Select item"
+                styleClass="w-full"
+              ></p-select>
+            </td>
+            <td>
+              <p-inputnumber
+                formControlName="price"
+                (onInput)="calculateTotal($index)"
+                [minFractionDigits]="2"
+                styleClass="w-full"
+              ></p-inputnumber>
+            </td>
+            <td>
+              <p-inputnumber
+                formControlName="quantity"
+                (onInput)="calculateTotal($index)"
+                styleClass="w-full"
+              ></p-inputnumber>
+            </td>
+            <td>
+              <p-inputnumber
+                formControlName="total"
+                [readonly]="true"
+                styleClass="w-full"
+              ></p-inputnumber>
+            </td>
+            <td>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                (onClick)="removeRow($index)"
+              ></p-button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
 
-              @for (item of allItems(); track item.itemId) {
-                <option [value]="item.itemId">{{ item.itemId }} - {{ item.itemName }}</option>
-              }
-            </select>
-          </td>
+    <div class="mb-4">
+      <p-button
+        label="Add Row"
+        icon="pi pi-plus"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="addRow()"
+      ></p-button>
+    </div>
 
-          <td>
-            <input
-              type="number"
-              class="form-control"
-              formControlName="price"
-              (input)="calculateTotal($index)"
-            />
-          </td>
-
-          <td>
-            <input
-              type="number"
-              class="form-control"
-              formControlName="quantity"
-              (input)="calculateTotal($index)"
-            />
-          </td>
-
-          <td>
-            <input type="number" class="form-control" formControlName="total" readonly />
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
-
-  <div class="mb-3">
-    <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
-  </div>
-
-  <div class="submitBtn">
-    <button type="button" class="btn btn-secondary me-3" (click)="goBack()">Back</button>
-    <button type="button" class="btn btn-success" (click)="saveOrders()">Save Orders</button>
-  </div>
-</form>
+    <div class="form-actions">
+      <p-button
+        label="Back"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="goBack()"
+      ></p-button>
+      <p-button label="Save Order Details" icon="pi pi-check" (onClick)="saveOrders()"></p-button>
+    </div>
+  </form>
+</div>

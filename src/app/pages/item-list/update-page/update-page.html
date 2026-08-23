@@ -1,27 +1,33 @@
-<form [formGroup]="itemForm">
-  <div class="mb-3">
-    <label for="itemName" class="form-label">Enter Item Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="itemName"
-      placeholder="Item Name"
-      formControlName="itemName"
-    />
-  </div>
-  <div class="mb-3">
-    <label for="itemCode" class="form-label">Enter Item Code</label>
-    <input
-      type="number"
-      class="form-control"
-      id="itemCode"
-      placeholder="Item Code"
-      formControlName="itemCode"
-    />
-  </div>
-  <div class="submitBtn">
-    <button type="button" class="btn btn-primary me-3" (click)="backToHomepage()">Back</button>
-    <button type="reset" class="btn btn-secondary me-3">Reset</button>
-    <button type="submit" class="btn btn-success" (click)="onUpdate()">Submit</button>
-  </div>
-</form>
+<div class="page narrow">
+  <h1 class="page-title">Update Item</h1>
+
+  <p-card>
+    <form [formGroup]="itemForm" class="form-body">
+      <div class="field">
+        <label for="itemName">Item Name</label>
+        <input pInputText id="itemName" placeholder="Item Name" formControlName="itemName" />
+      </div>
+      <div class="field">
+        <label for="itemCode">Item Code</label>
+        <p-inputnumber
+          inputId="itemCode"
+          formControlName="itemCode"
+          placeholder="Item Code"
+          [useGrouping]="false"
+          styleClass="w-full"
+        ></p-inputnumber>
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          label="Back"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="backToHomepage()"
+        ></p-button>
+        <p-button label="Save Changes" icon="pi pi-check" (onClick)="onUpdate()"></p-button>
+      </div>
+    </form>
+  </p-card>
+</div>

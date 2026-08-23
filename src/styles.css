@@ -1,1 +1,189 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'primeicons/primeicons.css';
+
+:root {
+  --brand-navy: #14213d;
+  --brand-navy-light: #1f3157;
+  --brand-orange: #fca311;
+  --brand-platinum: #e5e5e5;
+  --app-max-width: 1280px;
+
+  /* Type system: Plus Jakarta Sans carries headings/brand/numerals (distinctive, a little more
+     geometric character than the body face); Inter carries everything read at length — body
+     copy, table data, form inputs — since it's tuned for exactly that at small sizes. */
+  --font-display:
+    'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 12px 28px rgba(20, 33, 61, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  background: #f4f5f7;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  color: var(--brand-navy);
+  margin: 0;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--brand-orange);
+  font-weight: 500;
+}
+
+/* Numbers read better slightly tabular/tighter, and it ties stat figures + table totals back to
+   the display face for a bit of presence instead of blending into the body copy. */
+.stat-value,
+.page-title,
+.brand span,
+.auth-brand span {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Reusable page-content padding so every routed page lines up consistently under the shell. */
+.page {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 1.75rem 2rem 3rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 1.25rem;
+}
+
+.page.narrow {
+  max-width: 560px;
+}
+
+/* Shared form layout used by every add/edit form page (Item, Order, Order Details). */
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-body .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-body .field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #4b5563;
+}
+
+.form-body .field input,
+.form-body .field .p-inputnumber,
+.form-body .field .p-select,
+.form-body .field .p-datepicker {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+/* Shared by the login/register pages, rendered inside .auth-shell in app.html. */
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--brand-navy);
+}
+
+.auth-brand i {
+  color: var(--brand-orange);
+  font-size: 1.6rem;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0.35rem 0 1.5rem;
+}
+
+.auth-hint {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin: -0.5rem 0 1.25rem;
+}
+
+.auth-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/* Shared PrimeNG table/card polish — applied once here instead of per-page.                     */
+/* -------------------------------------------------------------------------------------------- */
+
+.p-datatable-thead > tr > th {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: #f9fafb;
+}
+
+.p-datatable {
+  border-radius: 0.85rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.p-card {
+  box-shadow: var(--shadow-sm);
+}
