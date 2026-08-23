@@ -26,14 +26,14 @@
       <header class="topbar">
         <div></div>
         <div class="user">
-          <p-tag
-            [value]="authService.role() ?? ''"
-            [severity]="authService.isAdmin() ? 'warn' : 'info'"
-          ></p-tag>
           <div class="user-identity">
             <span class="avatar">{{ initials() }}</span>
-            <span class="username">{{ authService.username() }}</span>
+            <div class="identity-text">
+              <span class="username">{{ authService.username() }}</span>
+              <span class="role-caption">{{ authService.role() }}</span>
+            </div>
           </div>
+          <div class="user-divider"></div>
           <p-button
             label="Logout"
             icon="pi pi-sign-out"

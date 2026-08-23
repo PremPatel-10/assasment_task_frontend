@@ -3,7 +3,6 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { AuthService } from './services/auth-service';
 import { SignalrService } from './services/signalr-service';
 
@@ -17,7 +16,6 @@ import { SignalrService } from './services/signalr-service';
     ToastModule,
     ConfirmDialogModule,
     ButtonModule,
-    TagModule,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
