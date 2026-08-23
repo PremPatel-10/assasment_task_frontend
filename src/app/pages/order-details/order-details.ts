@@ -55,18 +55,22 @@ export class OrderDetails {
     return this.detailsForm.get('details') as FormArray;
   }
 
-  id: number = 0;
-  isExist: boolean = false;
+  // Signals, not plain properties — this app is zoneless, so plain properties set inside the
+  // subscribe() callbacks below would never trigger the template (page heading, section title)
+  // to actually update. See the same fix in dashboard.ts.
+  id = signal(0);
+  isExist = signal(false);
   existingData = signal<Details[]>([]);
   ngOnInit() {
     this.route.paramMap.subscribe((param) => {
-      this.id = Number(param.get('id'));
+      const id = Number(param.get('id'));
+      this.id.set(id);
 
       this.detailsForm.patchValue({
-        orderId: this.id,
+        orderId: id,
       });
 
-      this.orderDetailsService.getBulkDetailsById(this.id).subscribe({
+      this.orderDetailsService.getBulkDetailsById(id).subscribe({
         next: (data) => {
           this.existingData.set(data);
         },
@@ -76,11 +80,11 @@ export class OrderDetails {
         },
       });
 
-      this.orderDetailsService.getBulkDetailsById(this.id).subscribe((data) => {
-        this.isExist = data.length > 0;
+      this.orderDetailsService.getBulkDetailsById(id).subscribe((data) => {
+        this.isExist.set(data.length > 0);
 
         // if data exist
-        if (this.isExist) {
+        if (this.isExist()) {
           this.detailsArray.clear();
 
           data.forEach((item) => {
@@ -140,7 +144,7 @@ export class OrderDetails {
         quantity: Number(row.get('quantity')?.value),
       }));
 
-      if (this.isExist) {
+      if (this.isExist()) {
         this.orderDetailsService.putBulkDetails(orderId, bulkData).subscribe({
           next: () => {
             this.notify.success('Details updated successfully');

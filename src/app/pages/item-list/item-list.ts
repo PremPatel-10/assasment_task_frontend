@@ -32,7 +32,10 @@ import { InputIconModule } from 'primeng/inputicon';
   styleUrl: './item-list.css',
 })
 export class ItemList {
-  totalItemCount: number = 0;
+  // Signal, not a plain property — this app is zoneless, so a plain property set inside
+  // loadPage()'s subscribe() callback below would never trigger p-table's [totalRecords] input
+  // to actually update (see the same fix/explanation in dashboard.ts).
+  totalItemCount = signal(0);
 
   constructor(
     private itemService: ItemService,
@@ -123,11 +126,11 @@ export class ItemList {
     this.itemService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (result) => {
         this.pageData.set(result.items);
-        this.totalItemCount = result.totalCount;
+        this.totalItemCount.set(result.totalCount);
         this.loading.set(false);
       },
       error: (err) => {
-        console.log('Error: ' + errorMessage(err));
+        this.notify.error(errorMessage(err));
         this.loading.set(false);
       },
     });

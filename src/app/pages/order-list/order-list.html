@@ -43,7 +43,7 @@
     (onLazyLoad)="onLazyLoad($event)"
     [paginator]="true"
     [rows]="pageSize"
-    [totalRecords]="totalOrderCount"
+    [totalRecords]="totalOrderCount()"
     [loading]="loading()"
     dataKey="orderId"
     styleClass="p-datatable-sm"

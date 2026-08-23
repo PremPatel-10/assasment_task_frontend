@@ -1,5 +1,5 @@
 <div class="page">
-  <h1 class="page-title">Order Details — Order #{{ id }}</h1>
+  <h1 class="page-title">Order Details — Order #{{ id() }}</h1>
 
   <form [formGroup]="detailsForm">
     @if (existingData().length > 0) {
@@ -24,7 +24,7 @@
       </p-table>
     }
 
-    <h3 class="section-title">{{ isExist ? 'Update Line Items' : 'Add Line Items' }}</h3>
+    <h3 class="section-title">{{ isExist() ? 'Update Line Items' : 'Add Line Items' }}</h3>
 
     <table class="rows-table" formArrayName="details">
       <thead>

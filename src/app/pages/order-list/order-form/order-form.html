@@ -1,5 +1,5 @@
 <div class="page narrow">
-  <h1 class="page-title">{{ id ? 'Update Order' : 'Add Order' }}</h1>
+  <h1 class="page-title">{{ id() ? 'Update Order' : 'Add Order' }}</h1>
 
   <p-card>
     <form [formGroup]="orderForm" class="form-body">
@@ -21,10 +21,10 @@
         <label for="orderDate">Order Date</label>
         <input pInputText type="date" id="orderDate" formControlName="orderDate" />
       </div>
-      @if (computedOrderTotal !== null) {
+      @if (computedOrderTotal() !== null) {
         <div class="field">
           <label for="orderTotal">Order Total (computed from line items)</label>
-          <input pInputText id="orderTotal" [value]="computedOrderTotal" readonly />
+          <input pInputText id="orderTotal" [value]="computedOrderTotal()" readonly />
         </div>
       }
 

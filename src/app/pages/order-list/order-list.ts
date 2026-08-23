@@ -33,7 +33,8 @@ import { InputIconModule } from 'primeng/inputicon';
   styleUrl: './order-list.css',
 })
 export class OrderList {
-  totalOrderCount: number = 0;
+  // Signal, not a plain property — see the same fix/explanation in dashboard.ts.
+  totalOrderCount = signal(0);
 
   constructor(
     private orderService: OrderService,
@@ -113,11 +114,11 @@ export class OrderList {
     this.orderService.itemPages(this.pageNumber, this.pageSize).subscribe({
       next: (result) => {
         this.pageData.set(result.items);
-        this.totalOrderCount = result.totalCount;
+        this.totalOrderCount.set(result.totalCount);
         this.loading.set(false);
       },
       error: (err) => {
-        console.log('Error: ' + errorMessage(err));
+        this.notify.error(errorMessage(err));
         this.loading.set(false);
       },
     });
