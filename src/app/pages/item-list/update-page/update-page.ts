@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item-service';
@@ -30,13 +30,18 @@ export class UpdatePage {
     private notify: NotificationService,
   ) {}
 
-  id: number = 0;
+  // Not currently read in the template, so this wasn't a live rendering bug — but every other
+  // route-param id in this app is a signal for the same reason (this app is zoneless; see
+  // dashboard.ts), so this is fixed proactively rather than left as a landmine for whoever adds
+  // an {{ id }} to this template next.
+  id = signal(0);
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      this.id = Number(params.get('id'));
+      const id = Number(params.get('id'));
+      this.id.set(id);
 
-      if (this.id) {
-        this.itemService.getItemById(this.id).subscribe({
+      if (id) {
+        this.itemService.getItemById(id).subscribe({
           next: (data) => {
             this.itemForm.patchValue(data);
           },
@@ -55,7 +60,7 @@ export class UpdatePage {
         itemCode: Number(this.itemForm.value.itemCode),
       };
 
-      this.itemService.updateItem(this.id, itemUpdateData).subscribe({
+      this.itemService.updateItem(this.id(), itemUpdateData).subscribe({
         next: () => {
           this.notify.success('Item updated successfully');
           this.router.navigate(['/itemlist']);
