@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -30,6 +30,11 @@ export class App {
     // startup instead of lazily on first use — it needs to connect as soon as login happens.
     private signalrService: SignalrService,
   ) {}
+
+  initials = computed(() => {
+    const name = this.authService.username();
+    return name ? name.slice(0, 2).toUpperCase() : '';
+  });
 
   readonly navLinks = [
     { path: '/', label: 'Home', icon: 'pi pi-home' },

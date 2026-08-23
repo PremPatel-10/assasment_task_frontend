@@ -30,7 +30,10 @@
             [value]="authService.role() ?? ''"
             [severity]="authService.isAdmin() ? 'warn' : 'info'"
           ></p-tag>
-          <span class="username">{{ authService.username() }}</span>
+          <div class="user-identity">
+            <span class="avatar">{{ initials() }}</span>
+            <span class="username">{{ authService.username() }}</span>
+          </div>
           <p-button
             label="Logout"
             icon="pi pi-sign-out"

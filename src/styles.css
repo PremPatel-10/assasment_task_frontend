@@ -6,6 +6,17 @@
   --brand-orange: #fca311;
   --brand-platinum: #e5e5e5;
   --app-max-width: 1280px;
+
+  /* Type system: Plus Jakarta Sans carries headings/brand/numerals (distinctive, a little more
+     geometric character than the body face); Inter carries everything read at length — body
+     copy, table data, form inputs — since it's tuned for exactly that at small sizes. */
+  --font-display:
+    'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 12px 28px rgba(20, 33, 61, 0.14);
 }
 
 * {
@@ -19,21 +30,44 @@ body {
 
 body {
   margin: 0;
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
   background: #f4f5f7;
   color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  color: var(--brand-navy);
+  margin: 0;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0 0 1rem;
 }
 
 a {
   color: var(--brand-orange);
+  font-weight: 500;
+}
+
+/* Numbers read better slightly tabular/tighter, and it ties stat figures + table totals back to
+   the display face for a bit of presence instead of blending into the body copy. */
+.stat-value,
+.page-title,
+.brand span,
+.auth-brand span {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 /* Reusable page-content padding so every routed page lines up consistently under the shell. */
@@ -45,8 +79,7 @@ a {
 
 .page-title {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--brand-navy);
+  font-weight: 800;
   margin: 0 0 1.25rem;
 }
 
@@ -68,9 +101,10 @@ a {
 }
 
 .form-body .field label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #374151;
+  letter-spacing: 0.01em;
+  color: #4b5563;
 }
 
 .form-body .field input,
@@ -91,6 +125,7 @@ a {
 .auth-card {
   width: 100%;
   max-width: 380px;
+  box-shadow: var(--shadow-lg);
 }
 
 .auth-brand {
@@ -99,7 +134,7 @@ a {
   justify-content: center;
   gap: 0.6rem;
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--brand-navy);
 }
 
@@ -127,4 +162,28 @@ a {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.875rem;
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/* Shared PrimeNG table/card polish — applied once here instead of per-page.                     */
+/* -------------------------------------------------------------------------------------------- */
+
+.p-datatable-thead > tr > th {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b7280;
+  background: #f9fafb;
+}
+
+.p-datatable {
+  border-radius: 0.85rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.p-card {
+  box-shadow: var(--shadow-sm);
 }
